@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>霧峰教會禮拜司會平台 (Gemini 2.5 企業版)</title>
+    <title>霧峰教會禮拜司會平台 (Gemini 2.0 修正版)</title>
     <style>
         /* ==================== */
-        /* CSS 樣式區 (A4列印優化) */
+        /* CSS 樣式區 */
         /* ==================== */
         :root {
             --primary: #2c3e50;
@@ -36,11 +36,36 @@
             border-radius: 8px;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .control-group label { display: block; color: #bdc3c7; margin-bottom: 5px; font-size: 0.95em; }
-        .control-group input, .control-group select, .control-group textarea {
+        /* 一般標籤設為區塊 */
+        .control-group > label { display: block; color: #bdc3c7; margin-bottom: 5px; font-size: 0.95em; }
+        
+        /* 輸入框樣式 */
+        .control-group input[type="text"], 
+        .control-group input[type="password"],
+        .control-group input[type="date"],
+        .control-group select, 
+        .control-group textarea {
             width: 100%; padding: 10px; border-radius: 4px; border: none; margin-bottom: 10px;
             font-size: 1em; font-family: inherit;
         }
+
+        /* 修正：單選按鈕橫向排列 */
+        .radio-row {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* 按鈕間距 */
+            margin-bottom: 10px;
+        }
+        .radio-row label {
+            display: flex; 
+            align-items: center; 
+            color: white; 
+            cursor: pointer;
+            margin: 0; /* 移除預設邊距 */
+            font-weight: normal;
+        }
+        .radio-row input { margin-right: 5px; width: auto; }
+
         .btn {
             background: var(--accent); color: white; border: none; padding: 12px;
             width: 100%; border-radius: 5px; font-size: 1.1em; cursor: pointer; font-weight: bold;
@@ -51,7 +76,6 @@
         
         /* 右側預覽區 */
         .preview { flex: 1; padding: 40px; overflow-y: auto; background: white; position: relative; }
-        /* 模擬 A4 */
         .script-box { 
             max-width: 210mm; 
             margin: auto; 
@@ -76,7 +100,6 @@
             white-space: pre-wrap; display: block; color: #000; 
             padding-left: 10px; border-left: 1px solid #eee; margin-left: 5px; 
         }
-        /* 報告事項容器修正 */
         .note { 
             display: block; 
             font-size: 0.9em; color: #666; border: 1px dashed #bbb; 
@@ -84,22 +107,13 @@
             line-height: 1.6;
         }
         
-        /* 標記 */
         .stand { background: var(--stand-bg); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 8px; vertical-align: middle; }
         .ruan { color: #c0392b; font-weight: bold; text-decoration: underline; }
 
-        /* 狀態顯示 */
-        #apiStatus { 
-            font-size: 0.85em; padding: 10px; border-radius: 5px; 
-            margin-bottom: 10px; display: none; line-height: 1.4;
-        }
-        .status-ok { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .status-err { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-
-        /* --- 列印設定 (A4) --- */
+        /* --- 列印設定 --- */
         @page { size: A4; margin: 2cm; }
         @media print {
-            .sidebar, .btn, .control-group, #apiStatus { display: none !important; }
+            .sidebar, .btn, .control-group { display: none !important; }
             body, html { background: white; margin: 0; padding: 0; height: auto; width: 100%; overflow: visible; }
             .preview { display: block; padding: 0; margin: 0; width: 100%; height: auto; overflow: visible; }
             .script-box { max-width: none; width: 100%; margin: 0; padding: 0; font-size: 14pt; line-height: 1.5; }
@@ -120,14 +134,13 @@
     
     <div class="control-group">
         <label style="color:#ffcc00;">🔑 Google API Key</label>
-        <p style="font-size:0.8em; color:#ccc; margin-top:0;">請貼上您的金鑰 (瀏覽器會自動記憶)。</p>
-        <input type="password" id="apiKey" placeholder="AIzaSy..." onchange="saveKey()">
+        <input type="password" id="apiKey" placeholder="請貼上您的 Key" onchange="saveKey()">
         
-        <label>AI 模型 (已更新為您帳號可用版本)</label>
+        <label>AI 模型 (已更新為您的可用版本)</label>
         <select id="aiModel">
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash (最新極速版)</option>
-            <option value="gemini-2.5-pro">Gemini 2.5 Pro (最新高畫質)</option>
-            <option value="gemini-2.0-flash">Gemini 2.0 Flash (穩定版)</option>
+            <option value="gemini-2.0-flash" selected>Gemini 2.0 Flash (推薦)</option>
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash (最新)</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro (最強)</option>
         </select>
     </div>
 
@@ -165,11 +178,13 @@
         <input type="text" id="praiseTeam" value="聖歌隊">
         <label>回應詩 (第二首)</label>
         <input type="text" id="hymn2" placeholder="例如：605">
+        
         <label>差遣/頌榮 (第三首)</label>
-        <div style="display:flex; gap:10px; margin-bottom:5px;">
+        <div class="radio-row">
             <label><input type="radio" name="endType" value="sending" checked> 差遣</label>
             <label><input type="radio" name="endType" value="doxology"> 頌榮</label>
         </div>
+        
         <input type="text" id="hymn3" placeholder="例如：402">
     </div>
 
@@ -197,7 +212,6 @@
 
 <script>
     // --- 經文資料庫：PCT PPT 標準版 (完整正確版) ---
-    [cite_start]//  [cite: 542-564, 728-750, 823-845, 916-926]
     const texts = {
         tw: {
             1: `【主的祈禱文 (台)】\n阮在天裡的父，願你的名聖，你的國臨到，你的旨意得成，佇地裡親像佇天裡。\n阮的日食今仔日給阮。赦免阮的辜負，親像阮也有赦免辜負阮的人。\n莫得導阮入佇試，著救阮脫離彼個歹的。\n因為國，權能，榮光攏是你所有，\n代代無盡。阿們。\n（台語漢字本 太6：9-13）`,
@@ -233,9 +247,9 @@
         updateUI();
     };
 
-    // --- API 生成 ---
+    // --- API 生成 (優先使用 2.0-flash) ---
     async function getAIPrayer(key, type, custom, preacher) {
-        const model = document.getElementById('aiModel').value; // 使用使用者選取的有效模型
+        const model = document.getElementById('aiModel').value;
         const lang = type === 'tw' ? '台語' : '華語';
         const pronoun = type === 'tw' ? '使用「阮」代表我們(排除上帝)，嚴禁使用「咱」' : '使用「我們」';
         const context = type === 'tw' ? '司會帶領的禮拜中段祈禱' : '敬拜團主領的祈禱';
@@ -261,7 +275,7 @@
             if (!response.ok) {
                 const errData = await response.json();
                 const errMsg = errData.error ? errData.error.message : response.statusText;
-                alert(`API 錯誤 (${response.status}):\n${errMsg}`);
+                alert(`API 錯誤 (${response.status}):\n${errMsg}\n\n請檢查 API Key 是否正確，或嘗試切換模型。`);
                 return `(生成失敗: ${errMsg})`;
             }
 
@@ -280,7 +294,7 @@
 
     async function generate() {
         const apiKey = document.getElementById('apiKey').value.trim();
-        if (!apiKey) { alert("請先輸入 API Key"); return; }
+        if (!apiKey) { alert("請先輸入 API Key！"); return; }
 
         const type = document.getElementById('serviceType').value;
         const date = document.getElementById('date').value;
@@ -294,7 +308,6 @@
         const standMark = `<span class="stand">*站立</span>`;
         const weekText = texts[type][week] || "(資料庫錯誤)";
         
-        // 修正版面重疊：改用 div class="note"
         const reportText = `(重要標註：聚會時間與內容、禮拜服事 請兄姊們注意觀看；奉獻資料請兄姊們過目，如有錯誤請向財務部提出更正。僅報告教會消息、團契消息即可；肢體消息留給交通人員。)`;
 
         document.getElementById('output').innerHTML = "<h3 style='text-align:center;'>⏳ 正在連線 AI...</h3>";
