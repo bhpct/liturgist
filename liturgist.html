@@ -79,8 +79,9 @@
         .content { white-space: pre-wrap; display: block; color: #000; padding-left: 10px; border-left: 1px solid #eee; margin-left: 5px; }
         .note { display: block; font-size: 0.9em; color: #666; border: 1px dashed #bbb; padding: 15px; background: #fffdf0; margin-top: 15px; line-height: 1.6; }
         
-        .hymn-img-container { margin-top: 15px; text-align: center; }
-        .hymn-img-container img { max-width: 100%; height: auto; border: 1px solid #ccc; margin-bottom: 5px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        /* 圖片容器 (聖詩 & 啟應文通用) */
+        .img-container { margin-top: 15px; text-align: center; }
+        .img-container img { max-width: 100%; height: auto; border: 1px solid #ccc; margin-bottom: 5px; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
 
         .emergency-footer { margin-top: 50px; padding: 20px; background-color: #ffe6e6; border: 2px solid #ffcccc; color: #c0392b; font-weight: bold; text-align: center; border-radius: 8px; page-break-inside: avoid; }
         
@@ -114,7 +115,7 @@
             .item { page-break-inside: avoid; margin-bottom: 25px; }
             .note { border: 1px dashed #666; background: white; color: #000; }
             .emergency-footer { border: 1px solid #000; color: #000; background: #fff; }
-            .hymn-img-container img { max-width: 90%; max-height: 23cm; margin: 10px auto; display: block; box-shadow: none; border: none; }
+            .img-container img { max-width: 90%; max-height: 23cm; margin: 10px auto; display: block; box-shadow: none; border: none; }
         }
     </style>
 </head>
@@ -183,7 +184,7 @@
         <input type="text" id="hymn3" placeholder="例如：402">
     </div>
 
-    <div class="control-group">
+    <div class="control-group" id="rrGroup">
         <label>啟應文篇數</label>
         <input type="text" id="respNo" placeholder="例如：13">
     </div>
@@ -223,7 +224,15 @@
         }
     };
 
-    function updateUI() { document.getElementById('hymnGroup').style.display = document.getElementById('serviceType').value === 'tw' ? 'block' : 'none'; }
+    function updateUI() { 
+        const serviceType = document.getElementById('serviceType').value;
+        const isTw = serviceType === 'tw';
+        
+        document.getElementById('hymnGroup').style.display = isTw ? 'block' : 'none'; 
+        // 華語場不顯示啟應文輸入框
+        document.getElementById('rrGroup').style.display = isTw ? 'block' : 'none'; 
+    }
+
     function autoWeek() { const d = new Date(document.getElementById('date').value); if(!isNaN(d)) document.getElementById('week').value = Math.ceil(d.getDate()/7) > 5 ? 5 : Math.ceil(d.getDate()/7); }
     function saveKey() { const key = document.getElementById('apiKey').value.trim(); if (key) try { localStorage.setItem('church_api_key', key); } catch(e){} }
     function toggleSidebar() { const sb = document.getElementById('sidebar'); if(window.innerWidth>768) sb.classList.toggle('collapsed'); else sb.classList.toggle('active'); }
@@ -287,12 +296,18 @@
         } catch (e) { return `(連線失敗: ${e.message})`; }
     }
 
-    async function getHymnImages(hymnNumber) {
-        if (!hymnNumber) return "";
+    // --- 通用圖片偵測函式 (支援 Hymn 與 RR) ---
+    async function getImages(prefix, number, maxPages=10) {
+        if (!number) return "";
         let imagesHtml = "";
         const checks = [];
-        for (let i = 0; i <= 10; i++) {
-            const path = `./hymn/伴奏${hymnNumber}-${i}.jpg`;
+        
+        // 修正路徑邏輯：如果是 RR，路徑是 RR/RR13-0.jpg；如果是聖詩，路徑是 hymn/伴奏43-0.jpg
+        let folder = prefix === "RR" ? "RR" : "hymn";
+        let filePrefix = prefix === "RR" ? "RR" : "伴奏";
+        
+        for (let i = 0; i <= maxPages; i++) {
+            const path = `./${folder}/${filePrefix}${number}-${i}.jpg`;
             const checkPromise = new Promise((resolve) => {
                 const img = new Image();
                 img.onload = () => resolve({ idx: i, path: path, exists: true });
@@ -303,9 +318,9 @@
         }
         const results = await Promise.all(checks);
         results.forEach(res => {
-            if (res.exists) imagesHtml += `<img src="${res.path}" alt="聖詩${hymnNumber}第${res.idx}頁">`;
+            if (res.exists) imagesHtml += `<img src="${res.path}" alt="${prefix}${number}-${res.idx}">`;
         });
-        if (imagesHtml) return `<div class="hymn-img-container">${imagesHtml}</div>`;
+        if (imagesHtml) return `<div class="img-container">${imagesHtml}</div>`;
         return "";
     }
 
@@ -326,19 +341,26 @@
         const weekText = texts[type][week] || "(資料庫錯誤)";
         const reportText = `(重要標註：聚會時間與內容、禮拜服事 請兄姊們注意觀看；奉獻資料請兄姊們過目，如有錯誤請向財務部提出更正。僅報告教會消息、團契消息即可；肢體消息留給交通人員。)`;
 
-        document.getElementById('output').innerHTML = "<h3 style='text-align:center;'>⏳ 正在連線 AI 並搜尋聖詩圖片...</h3>";
+        document.getElementById('output').innerHTML = "<h3 style='text-align:center;'>⏳ 正在連線 AI 並搜尋圖片...</h3>";
         
         const aiPrayerText = await getAIPrayer(apiKey, type, customPrayer, preacher);
         
+        // 取得聖詩圖片
         const h1Num = document.getElementById('hymn1').value.trim();
         const h2Num = document.getElementById('hymn2').value.trim();
         const h3Num = document.getElementById('hymn3').value.trim();
         
-        const h1Img = await getHymnImages(h1Num);
-        const h2Img = await getHymnImages(h2Num);
-        const h3Img = await getHymnImages(h3Num);
-        const offeringImg = await getHymnImages("380"); // 奉獻詩圖片
-        const publicPrayerImg = await getHymnImages("330"); // 公禱詩圖片
+        const h1Img = await getImages("hymn", h1Num);
+        const h2Img = await getImages("hymn", h2Num);
+        const h3Img = await getImages("hymn", h3Num);
+        const offeringImg = await getImages("hymn", "380");
+        const publicPrayerImg = await getImages("hymn", "330");
+        
+        // 取得啟應文圖片 (僅台語)
+        let rrImg = "";
+        if (type === 'tw') {
+            rrImg = await getImages("RR", respNo, 3); // 偵測 0-3 頁
+        }
 
         let html = `<div class="header"><h1>${date} 霧峰教會禮拜程序</h1><h2>${type === 'tw' ? '第一場：台語禮拜 (09:30)' : '第二場：華語禮拜 (11:00)'}</h2><p>主禮：${preacher} | 講題：${topic}</p></div>`;
 
@@ -349,7 +371,10 @@
             html += `<div class="item"><span class="title">1. 宣召</span><span class="bridge">司會：(直接讀經文，不可說「宣召」)</span></div>`;
             html += `<div class="item"><span class="title">${standMark} 2. 聖詩</span><span class="bridge">司會：相與來吟詩，讚美上帝，聖詩 ${h1Num} 首，聖詩 ${h1Num} 首。請起立吟全首。</span>${h1Img}</div>`;
             html += `<div class="item"><span class="title">${standMark} 3. 信仰告白/祈禱/訓勉</span><span class="bridge">司會：請咱依然站立...</span><span class="content" style="border:1px solid #ccc; padding:10px;">${weekText}</span></div>`;
-            html += `<div class="item"><span class="title">4. 啟應</span><span class="bridge">司會：(請坐) 作伙交讀啟應文第 ${respNo} 篇。我來讀，請您來應。</span></div>`;
+            
+            // 台語場：加入啟應文圖片
+            html += `<div class="item"><span class="title">4. 啟應</span><span class="bridge">司會：(請坐) 作伙交讀啟應文第 ${respNo} 篇。我來讀，請您來應。</span>${rrImg}</div>`;
+            
             html += `<div class="item"><span class="title">5. 祈禱 (司會帶領)</span><span class="bridge">司會：(帶領簡短祈禱)</span><span class="content" style="border-left:4px solid var(--accent); padding-left:10px;">${aiPrayerText}</span></div>`;
             html += `<div class="item"><span class="title">6. 讚美</span><span class="bridge">司會：請 ${praiseTeam} 來頌讚。</span><span class="content">(${praiseTeam} 獻詩)</span></div>`;
             html += `<div class="item"><span class="title">7. 聖經</span><span class="bridge">司會：來聽上帝的話，記載於 ${scripture}。</span><span class="content">(讀畢) 司會：願主將祂的話，刻在<span style="color:#c0392b; font-weight:bold;">咱</span>的心。</span></div>`;
@@ -371,10 +396,7 @@
             html += `<div class="item"><span class="title">6. 講道</span><span class="bridge">司會：現在邀請 ${preacher} 為我們證道，主題是「${topic}」。</span></div>`;
             html += `<div class="item"><span class="title">7. 祈禱 (講員)</span><span class="content">(講員祈禱)</span></div>`;
             html += `<div class="item"><span class="title">${standMark} 8. 回應詩 (敬拜團)</span><span class="bridge">司會：(由敬拜讚美團主領帶領，司會不用接話)</span></div>`;
-            
-            // 華語場修正：移除 380 聖詩圖片，改文字
             html += `<div class="item"><span class="title">9. 奉獻</span><span class="bridge">司會：(請坐) 這時我們要奉獻，請兄姊們預備來奉獻。</span><div class="note">（由敬拜讚美團主領進行奉獻禱告）</div></div>`;
-            
             html += `<div class="item"><span class="title">10. 金句/報告/交通</span><div class="note">${reportText}</div></div>`;
             html += `<div class="item"><span class="title">${standMark} 11. 公禱</span><span class="bridge">司會：請起立。(此段司會不需禱告)</span></div>`;
             html += `<div class="item"><span class="title">${standMark} 12. 祝福差遣</span><span class="bridge">司會：唱詩 「賜福與你」。</span></div>`;
