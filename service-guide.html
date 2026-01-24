@@ -22,7 +22,7 @@
             display: flex;
             background-color: #fff;
             color: var(--text-color);
-            line-height: 1.7; /* 增加行高提升閱讀感 */
+            line-height: 1.8; /* 增加行高，提升長文閱讀舒適度 */
         }
 
         /* --- 側邊導覽列 --- */
@@ -112,20 +112,20 @@
         h1 { color: var(--primary); border-left: 8px solid var(--accent); padding-left: 20px; margin-bottom: 30px; }
         h2 { color: var(--accent); margin-top: 40px; display: flex; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         h2 i { margin-right: 10px; }
-        h3 { color: #2c3e50; margin-top: 30px; font-weight: bold; background: #f0f0f0; padding: 8px 12px; border-radius: 4px; display: inline-block; }
-        
+        h3 { color: #2c3e50; margin-top: 30px; font-weight: bold; background: #e9ecef; padding: 8px 12px; border-radius: 4px; display: inline-block; }
+        h4 { color: #555; margin-top: 20px; text-decoration: underline; }
+
         ul, ol { padding-left: 25px; margin-bottom: 20px; }
         li { margin-bottom: 10px; }
-        strong { color: #000; }
+        
+        /* 特殊文字強調 */
+        .highlight { color: #c0392b; font-weight: bold; background: #fff0f0; padding: 0 4px; }
+        .script-text { font-family: "KaiTi", "BiauKai", serif; color: #0056b3; font-weight: bold; }
 
         /* 提示框 */
         .note-box {
             background: #fff3cd; border-left: 5px solid #ffc107;
             padding: 20px; margin: 20px 0; border-radius: 0 5px 5px 0;
-        }
-        .quote-box {
-            font-style: italic; color: #555; background: #f9f9f9;
-            padding: 15px; border-left: 4px solid #999; margin: 10px 0;
         }
 
         /* Q&A 折疊選單 */
@@ -133,10 +133,10 @@
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             transition: all 0.3s;
         }
-        details[open] { border-color: var(--accent); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        details[open] { border-color: var(--accent); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         summary {
             padding: 15px;
             cursor: pointer;
@@ -146,11 +146,12 @@
             justify-content: space-between;
             align-items: center;
             background-color: #f8f9fa;
+            color: #2c3e50;
         }
         summary:hover { background-color: #f1f1f1; }
         summary::after { content: '\f078'; font-family: "Font Awesome 5 Free"; font-weight: 900; transition: transform 0.3s; }
         details[open] summary::after { transform: rotate(180deg); }
-        .qa-content { padding: 15px 20px; color: #444; background: #fff; border-top: 1px solid #eee; }
+        .qa-content { padding: 20px; color: #444; background: #fff; border-top: 1px solid #eee; }
 
         /* 圖片容器 */
         .img-placeholder {
@@ -190,7 +191,7 @@
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2>霧峰教會</h2>
-            <p>禮拜服事人員說明手冊</p>
+            <p>禮拜司會訓練課程</p>
         </div>
 
         <div class="tools-section">
@@ -205,8 +206,8 @@
         <ul class="nav-links">
             <li><a href="#intro" onclick="closeMenu()"><i class="fas fa-home"></i> 前言與素養</a></li>
             <li><a href="#liturgist" onclick="closeMenu()"><i class="fas fa-microphone-alt"></i> 司會準備與執行</a></li>
-            <li><a href="#flow" onclick="closeMenu()"><i class="fas fa-list-ol"></i> 禮拜流程細節</a></li>
-            <li><a href="#emergency" onclick="closeMenu()"><i class="fas fa-exclamation-triangle"></i> 突發狀況 Q&A</a></li>
+            <li><a href="#flow" onclick="closeMenu()"><i class="fas fa-list-ol"></i> 禮拜流程話術</a></li>
+            <li><a href="#emergency" onclick="closeMenu()"><i class="fas fa-exclamation-triangle"></i> 突發狀況與Q&A</a></li>
             <li><a href="#sacrament" onclick="closeMenu()"><i class="fas fa-wine-glass-alt"></i> 聖禮典服事</a></li>
             <li><a href="#reception" onclick="closeMenu()"><i class="fas fa-users"></i> 聚會招待</a></li>
             <li><a href="#music" onclick="closeMenu()"><i class="fas fa-music"></i> 音樂與影音</a></li>
@@ -216,149 +217,187 @@
     <main class="main-content">
         
         <section id="intro">
-            <h1>禮拜服事人員說明手冊</h1>
+            <h1>禮拜司會訓練課程</h1>
             <div class="note-box">
                 <i class="fas fa-quote-left"></i> 
                 你們要歸我作祭司的國度，為聖潔的國民。這些話你要告訴以色列人。 (出埃及記 19：6)
             </div>
             
             <h2><i class="fas fa-user-check"></i> 司會者的基本素養</h2>
-            [cite_start]<p>司會之目的是領導會眾，以謙卑恭敬之態度，用心靈、誠實、有秩序的來親近上帝。 [cite: 937]</p>
+            <p>司會之目的是領導會眾，以謙卑恭敬之態度，用心靈、誠實口唱心和，有秩序的來親近、敬拜、讚美上帝。</p>
+            
+            <h3>基本條件</h3>
             <ul>
-                [cite_start]<li><strong>資格：</strong> 優先由長執服事，或經訓練之會友。 [cite: 927]</li>
-                [cite_start]<li><strong>態度：</strong> 口齒清楚、生活有好見證、態度平穩莊重，避免消極負面話語。 [cite: 929-930, 944-945]</li>
-                [cite_start]<li><strong>服裝儀容：</strong> [cite: 941-943]
-                    <ul>
-                        <li><strong>男性：</strong> 深色長褲、素色襯衫（冬季加西裝外套）、皮鞋、打領帶。</li>
-                        <li><strong>女性：</strong> 穿著端莊正式服裝。</li>
-                    </ul>
-                </li>
+                <li>司會人員以長執為優先服事，或經司會訓練之會友亦可。</li>
+                <li>瞭解教會的狀況和禮儀。</li>
+                <li>口齒清楚、口音準確；有好的生活見證。 [cite: 929-930]</li>
+                <li>有事奉的心志、肯學習、肯改進自己。</li>
+                <li>態度平穩、莊重，語調自然，不裝腔作勢。</li>
+                <li>避免消極、負面的話語和態度。 [cite: 945]</li>
+            </ul>
+
+            <h3>衣著建議</h3>
+            <ul>
+                <li><strong>原則：</strong> 以整潔樸素為主，並以整體會友的態度來穿著。 [cite: 941]</li>
+                <li><strong>男性：</strong> 深色長褲，素色襯衫。視季節而定：夏季短袖襯衫，冬季長袖襯衫、西裝外套或休閒西裝外套，穿皮鞋（或深色休閒鞋）、打領帶。 </li>
+                <li><strong>女性：</strong> 穿著較正式服裝。 [cite: 943]</li>
             </ul>
         </section>
 
         <section id="liturgist">
-            <h2><i class="fas fa-clipboard-check"></i> 司會準備與執行</h2>
+            <h2><i class="fas fa-clipboard-check"></i> 司會者之預備工作與執行細則</h2>
             
-            <h3>前置作業 (週六)</h3>
+            <h3>身心準備</h3>
             <ul>
-                [cite_start]<li><strong>熟讀聖經：</strong> 至少讀 5 次至通順，遇難字請向牧者請益。 [cite: 938]</li>
-                [cite_start]<li><strong>演練流程：</strong> 依週報內容在家演練，早睡養足精神。 [cite: 939-940]</li>
-                [cite_start]<li><strong>虛心學習：</strong> 隨時請教牧長或屬靈長輩。 [cite: 946]</li>
+                <li>要祈求聖靈的幫助，充分準備、禱告，每次不得怠忽或過於自信。</li>
+                <li><strong>聖經準備：</strong> 至少要讀五次以上至通順，並要了解內容（如遇難字，可向牧者或孰悉白話字之長執請益）。 [cite: 938]</li>
+                <li><strong>演練：</strong> 前一週週報就會刊登資料，可在家重複演練。星期六盡量早睡，養足精神。 [cite: 939-940]</li>
             </ul>
 
-            <h3>禮拜當日 (週日)</h3>
+            <h3>禮拜當日執行</h3>
             <ul>
-                [cite_start]<li><strong>提早 30 分鐘抵達：</strong> 確認週報內容、測試麥克風音量、確認服事人員 (講員、司獻、音控) 是否到齊。 [cite: 948-950]</li>
-                [cite_start]<li><strong>禮拜前 5 分鐘：</strong> 參加牧師帶領的服事者禱告會，並準備開始練習詩歌。 [cite: 948]</li>
-                [cite_start]<li><strong>講員接待：</strong> 若有外來講員，主動詢問需求並簡述流程。 [cite: 951]</li>
+                <li><strong>時間：</strong> 至少應於禮拜前 30 分鐘到達禮拜堂。</li>
+                <li><strong>禱告：</strong> 禮拜前 5 分鐘牧師會帶領所有服事者禱告（此時所有服事者應要預備好準備開始禮拜），再由司會者開始進行詩歌練習與宣佈禮拜開始。 [cite: 948]</li>
+                <li><strong>最後確認：</strong> 抵達後再次確認週報聖詩、經節是否有出入，並協助查看禮拜事奉者（講員、司獻、投影、音控等）是否已經抵達。 [cite: 949]</li>
+                <li><strong>設備測試：</strong> 先到台上，調整麥克風高度，並試音量大小。講話聲音要盡量大聲，表現有力快速，不要有氣無力。 [cite: 950, 952]</li>
+                <li><strong>講員接待：</strong> 若有外來講員，請司會者先向牧者詢問是否需要協助，並將教會流程簡述給外來講員知悉。 [cite: 951]</li>
             </ul>
         </section>
 
         <section id="flow">
-            <h2><i class="fas fa-list-ol"></i> 禮拜流程細節與話術</h2>
-            
+            <h2><i class="fas fa-comment-dots"></i> 禮拜司會者注意細則與話術</h2>
+            <p>禮拜前應將當日聖經經文、啟應文、聖詩讀熟並翻至該處做記號。</p>
+
             <h3>1. 宣召</h3>
-            [cite_start]<p>直接讀出選用的經節，<strong>不必說「宣召」二字</strong>。 [cite: 961]</p>
+            <p>宣召時，直接讀出選用的經節，<strong>不必說「宣召」二字</strong>。 [cite: 961]</p>
 
             <h3>2. 聖詩</h3>
-            [cite_start]<p>宣布頁數至少兩次，確認會眾翻到再開始。 [cite: 964]<br>
-            [cite_start]<strong>話術：</strong>「相與來吟詩，【讚美/回應】上帝，聖詩○○首... 請起立吟【全首/節數】。」 [cite: 965]</p>
-
-            <h3>3. 橋接句 (重要)</h3>
             <ul>
-                [cite_start]<li><strong>主禱文：</strong>「咱用主所教示的祈禱文來祈禱。」 [cite: 968]</li>
-                [cite_start]<li><strong>信仰告白/使徒信經：</strong>「咱用○○信經來告白咱的信仰。」 [cite: 969]</li>
-                [cite_start]<li><strong>十誡/新誡命：</strong>「作伙讀○○，來提醒自己、彼此勸勉。」 [cite: 970]</li>
+                <li>每次講明聖詩第幾首或經節時，至少宣佈兩次以上，<span class="highlight">看會眾都翻到了才繼續進行</span>。 [cite: 964]</li>
+                <li>話術：「相與來吟詩，【讚美】上帝或【回應】上帝，聖詩○○○首，聖詩○○○首，請起立吟【全首】或【節數】」。 [cite: 965]</li>
+                <li>起立或坐下時，可以用口頭告訴大家，也可以用動作示意。</li>
+            </ul>
+
+            <h3>3. 連接詞用法 (橋接句)</h3>
+            <ul>
+                <li><strong>主的祈禱文：</strong>「咱用主所教示的祈禱文來祈禱。」 [cite: 968]</li>
+                <li><strong>信仰告白 (使徒信經/長老教會信仰告白)：</strong>「咱用○○○○○○來告白咱的信仰。」 [cite: 969]</li>
+                <li><strong>上帝十條誡 / 新的誡命：</strong>「作伙讀○○○○○，來提醒自己、彼此勸勉。」 [cite: 970]</li>
             </ul>
 
             <h3>4. 啟應文</h3>
-            [cite_start]<p>確認會眾翻到後，說：「我來讀，請您來應」或「請會眾先讀頭一行」。 [cite: 972] <br>
-            [cite_start]<span style="color:#c0392b;">※ 注意：啟應文中常有難字，務必預習。 [cite: 973]</span></p>
+            <p>話術：「作伙交讀啟應文第○○○，聖詩的後面啟應文第○○」。<br>
+            看會眾都翻到了，才說：「我來讀，請您來應」或「請會眾(或兄弟)先讀頭一行」。 [cite: 972]<br>
+            <span style="color:#c0392b;">※ 注意：啟應文中常有難字，請務必留意準備。</span></p>
 
             <h3>5. 禱告</h3>
-            [cite_start]<p>可預先寫下禱告詞，切勿長篇大論。內容包含認罪、感謝、代禱。台語禱告時請注意「阮」(對神) 與「咱」(對人) 的差別。 [cite: 975-978]</p>
+            <p>可將禱告詞寫下，切勿長篇大論。準備方向：認罪、感謝、代禱、盼望、信心、回應等。台語須注意「咱」(包含聽者)、「阮」(不含聽者) 的差別。 [cite: 977-978]</p>
 
             <h3>6. 聖經</h3>
-            <p>讀畢後說：「願上帝賜福聽從並遵行祂的話去行的人」或「<strong>求主將祂的話，刻在我們（咱）的心</strong>」。<br>
-            [cite_start]<span style="color:#c0392b;">❌ 禁止說：「願上帝祝福祂的話語」。 [cite: 981]</span></p>
+            <p>話術：「來聽上帝的話，記載於○約○○第○章第○○節至第○○節，和合本聖經○約部分第○○頁，台語漢字本聖經第○○頁。」<br>
+            (看會眾都翻到了，才繼續) 「翻到我來讀。」 [cite: 980]<br>
+            讀完說：「聖經讀到這裡」，「願上帝賜福聽從並遵行祂的話去行的人」，或「<span class="script-text">求主（或願主）將祂的話，刻在我們（咱）的心</span>」。<br>
+            <span style="color:red">❌ 不要說：「願上帝祝福祂的話語」。 [cite: 981]</span></p>
 
-            <h3>7. 奉獻與報告</h3>
-            [cite_start]<p>司獻者由後方走到台前，全體唱奉獻詩 380 首。報告宜簡明扼要。 [cite: 986-987]<br>
-            [cite_start]<span style="background:#eee; padding:2px;">註：政治人物介紹需待禮拜後交通時間，不宜在禮拜中請其講話。 [cite: 988]</span></p>
+            <h3>7. 講道</h3>
+            <p>請牧師來證道：「他要講的題目是…………」。<br>
+            若外來牧師就連姓名說出，並簡單介紹。介紹要簡單、清楚，不宜客套奉承。 [cite: 984]</p>
 
-            <h3>8. 第二場禮拜 (華語) 特別注意</h3>
+            <h3>8. 奉獻、報告、交通</h3>
             <ul>
-                [cite_start]<li>禱告、奉獻禱告由<strong>敬拜團主領</strong>帶領。 [cite: 999]</li>
-                [cite_start]<li>敬拜讚美後<strong>不要說</strong>「現在禮拜要開始」，因為禮拜早就開始了。 [cite: 1000]</li>
+                <li>司獻者在後面等齊後，一起走回台前唱奉獻詩 380 首「甘心的奉獻」。 [cite: 986]</li>
+                <li>報告事項宜簡明扼要。</li>
+                <li>若有政治人物參加禮拜，須待交通時間時以首次參加禮拜者方式加以介紹。<span class="highlight">不宜在禮拜中請其講話</span>，以免破壞禮拜精神。 [cite: 988]</li>
+                <li>教界消息、肢體消息可以省略報告，由牧師在交通時補充即可。</li>
+            </ul>
+
+            <h3>9. 頌榮、祝禱</h3>
+            <p>頌讚主榮/祝福差遣：「來吟【頌榮/祝福】的詩○○○首，吟詩後請○牧師祝禱」，並向司琴致意開始彈奏。 [cite: 992-993]</p>
+
+            <h3>10. 第二場禮拜 (華語) 特別注意</h3>
+            <ul>
+                <li>使用語言有轉換，同工們仍然需要事先練習。</li>
+                <li>禱告、奉獻禱告是由<strong>敬拜團主領</strong>帶領。 [cite: 999]</li>
+                <li>敬拜讚美是屬於宣召與頌讚的流程，<span class="highlight">不要在敬拜團之後說：現在禮拜要開始</span>。因為禮拜早就開始。 [cite: 1000]</li>
             </ul>
         </section>
 
         <section id="emergency">
             <div class="emergency-header">
-                <h2 style="color:white; margin:0; border:none;"><i class="fas fa-exclamation-circle"></i> 突發狀況應變 Q&A</h2>
+                <h2 style="color:white; margin:0; border:none;"><i class="fas fa-exclamation-triangle"></i> 突發狀況應變 Q&A</h2>
             </div>
             <div class="emergency-body">
-                [cite_start]<p>遇到異常狀況時，司會者需保持鎮定，判斷是否暫停禮拜。若有需要，請長執協助引導。 [cite: 1016-1019]</p>
+                <p><strong>基本原則：</strong> 司會判斷 -> 禱告 -> 接續禮拜 (或暫停) -> 長執協助引導 -> 恢復後吟詩 159 首。 [cite: 1015-1021]</p>
 
                 <details>
-                    <summary>Q1：選舉期間，候選人要求上台拉票？</summary>
+                    <summary>Q1：選舉期間，候選人要求上台拉票？ </summary>
                     <div class="qa-content">
-                        [cite_start]<strong>處理方式：</strong> 不宜在禮拜中請其講話。須待禮拜結束後的「交通時間」，以介紹首次參加禮拜者的方式簡單介紹即可。 [cite: 988, 1003]
+                        <strong>處理方式：</strong> 不宜在禮拜中請其講話。須待禮拜結束後的「交通時間」，以介紹首次參加禮拜者的方式簡單介紹即可。
                     </div>
                 </details>
 
                 <details>
-                    <summary>Q2：有人舉牌抗議、鬧場或喝醉酒？</summary>
+                    <summary>Q2：不速之客抗議、鬧場或喝醉酒？ [cite: 1004]</summary>
                     <div class="qa-content">
-                        [cite_start]<strong>處理方式：</strong> 司會者保持鎮定，請現場招待或長執前往關切並將其引導至堂外溝通，避免影響禮拜進行。 [cite: 1004]
+                        <strong>處理方式：</strong> 司會者保持鎮定，請現場招待或長執前往關切，並將其引導至堂外溝通，避免影響禮拜進行。
                     </div>
                 </details>
 
                 <details>
-                    <summary>Q3：會眾當場反駁牧師講道，甚至上台抗議？</summary>
+                    <summary>Q3：會眾當場反駁牧師講道，甚至上台抗議？ [cite: 1005]</summary>
                     <div class="qa-content">
-                        [cite_start]<strong>處理方式：</strong> 招待長執應立即上前攔阻並安撫，司會可帶領會眾唱詩歌或禱告轉移焦點，緩和氣氛。 [cite: 1005]
+                        <strong>處理方式：</strong> 招待長執應立即上前攔阻並安撫，司會可帶領會眾唱詩歌或禱告轉移焦點，緩和氣氛。
                     </div>
                 </details>
 
                 <details>
-                    <summary>Q4：設備故障 (麥克風沒聲、停電、電腦當機)？</summary>
+                    <summary>Q4：設備故障 (麥克風沒聲、停電、電腦當機)？ [cite: 1006]</summary>
                     <div class="qa-content">
                         <strong>處理方式：</strong> 
                         1. 若麥克風沒聲音，請改用宏亮聲音直接引導，或請音控更換備用麥克風。<br>
                         2. 投影掛掉時，請會眾直接看聖經或聖詩。<br>
-                        3. [cite_start]若停電，請保持冷靜，打開門窗保持光線與通風，帶領會眾禱告或唱熟悉的詩歌。 [cite: 1006]
+                        3. 若停電，請保持冷靜，打開門窗保持光線與通風，帶領會眾禱告或唱熟悉的詩歌。
                     </div>
                 </details>
 
                 <details>
-                    <summary>Q5：發生地震或附近火災？</summary>
+                    <summary>Q5：發生地震或附近火災？ [cite: 1007]</summary>
                     <div class="qa-content">
-                        [cite_start]<strong>處理方式：</strong> 立即暫停禮拜。若地震強烈，請指示會眾就地掩護或依疏散動線離開建築物。安全第一。 [cite: 1007]
+                        <strong>處理方式：</strong> 立即暫停禮拜。若地震強烈，請指示會眾就地掩護或依疏散動線離開建築物。安全第一。
                     </div>
                 </details>
 
                 <details>
-                    <summary>Q6：講員遲到或還在塞車？</summary>
+                    <summary>Q6：講員遲到或還在塞車？ [cite: 1009]</summary>
                     <div class="qa-content">
-                        [cite_start]<strong>處理方式：</strong> 司會可多帶領唱詩歌、延長禱告時間，或請在場牧師/長老先分享見證或短講墊檔。 [cite: 1009]
+                        <strong>處理方式：</strong> 司會可多帶領唱詩歌、延長禱告時間，或請在場牧師/長老先分享見證或短講墊檔。
                     </div>
                 </details>
 
                 <details>
-                    <summary>Q7：小孩哭鬧或會眾講話太大聲？</summary>
+                    <summary>Q7：小孩哭鬧或會眾講話太大聲？ [cite: 1010]</summary>
                     <div class="qa-content">
-                        [cite_start]<strong>處理方式：</strong> 司會不需在台上公開指責。請招待同工輕聲前往提醒，或引導家長至婦幼區。 [cite: 1010]
+                        <strong>處理方式：</strong> 司會不需在台上公開指責。請招待同工輕聲前往提醒，或引導家長至婦幼區。
                     </div>
                 </details>
 
                 <details>
-                    <summary>Q8：有人突然倒地、昏倒或癲癇發作？</summary>
+                    <summary>Q8：有人突然倒地、昏倒、發作？ [cite: 1013]</summary>
                     <div class="qa-content">
                         <strong>處理方式：</strong> 
                         1. 立即指派長執打 119。<br>
                         2. 具醫護背景會友前往協助。<br>
-                        3. [cite_start]司會帶領全體會眾為其迫切禱告，並保持現場安靜與秩序。 [cite: 1013]
+                        3. 司會帶領全體會眾為其迫切禱告，並保持現場安靜與秩序。
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Q9：司會出錯 (講錯、遺漏、拉鍊沒拉...)？ [cite: 1011, 1014]</summary>
+                    <div class="qa-content">
+                        <strong>處理方式：</strong> 
+                        1. 發現遺漏或講錯，若不影響整體流暢，可自然帶過或稍微更正即可。<br>
+                        2. 若是服裝問題 (如拉鍊沒拉)，請自然地轉身或利用講台遮擋整理，保持鎮定。<br>
+                        3. 禱告詞忘記或空白，可直接以「奉主耶穌的名禱告，阿們」結束，或改唱短詩。
                     </div>
                 </details>
 
@@ -366,66 +405,86 @@
                     <strong>🎵 禮拜中斷時的「救命詩歌」：新聖詩 159 首</strong><br>
                     若發生狀況導致禮拜中斷，排除後為恢復平靜心境，請帶領會眾唱：<br>
                     <strong>「主惦我心內，無驚惶自在。」</strong><br>
-                    [cite_start]<small>記憶口訣：159 (祂有救) [cite: 1035-1038]</small>
+                    <small>記憶口訣：159 (祂有救) [cite: 1035-1038]</small>
                 </div>
             </div>
         </section>
 
         <section id="sacrament">
             <h2><i class="fas fa-wine-glass-alt"></i> 聖禮典服事 (聖餐/洗禮)</h2>
+            
+            <h3>準備工作</h3>
             <ul>
-                [cite_start]<li><strong>服裝：</strong> 服事長老請穿著長老服、戴白色手套。 [cite: 1047]</li>
-                [cite_start]<li><strong>預備：</strong> 禮拜組長執準備餅、葡萄汁、洗禮水 (以玻璃盤盛裝)。 [cite: 1041]</li>
-                [cite_start]<li><strong>流程 SOP：</strong> [cite: 1043-1046]
-                    <ol>
-                        <li>服事長老坐在中間走道兩側最前排。</li>
-                        <li>至聖餐桌前排成一行，領受餅/杯。</li>
-                        <li>分發給會眾 (需注意領餐者是否已受洗)。</li>
-                        <li>分發完畢後，先在後方集合，再依序回台前領受，最後回座。</li>
-                    </ol>
-                </li>
+                <li><strong>用品準備：</strong> 禮拜組長執準備餅、葡萄汁、洗禮水 (以玻璃盤盛裝)。 [cite: 1041]</li>
+                <li><strong>服裝：</strong> 服事長老請穿著長老服、戴白色手套。男性打領帶，女性穿著有衣領之衣服。 [cite: 1047]</li>
+                <li><strong>麥克風：</strong> 請音控人員於台下準備一支麥克風供牧師使用。 [cite: 1048]</li>
             </ul>
-            <div class="img-placeholder">(示意圖：聖餐服事站位與動線圖)</div>
+
+            <h3>服事流程</h3>
+            <ol>
+                <li><strong>就位：</strong> 聖餐前請服事長老坐在靠中間走道左右兩側最前排座位。 [cite: 1043]</li>
+                <li><strong>接餐：</strong> 聖餐時，由中間走道出列至聖餐桌前，排成一行接餅或葡萄汁。 [cite: 1044]</li>
+                <li><strong>分發：</strong> 按照分配之座位分送，注意領餐者是否已受洗。 [cite: 1045]</li>
+                <li><strong>回座：</strong> 分送完後，先在禮拜堂後方集合，到齊後再一起依序回到聖餐桌前，領受牧師分送聖餐品後再一起回座。 [cite: 1046]</li>
+            </ol>
         </section>
 
         <section id="reception">
             <h2><i class="fas fa-users"></i> 聚會招待</h2>
+            <p>請於禮拜前 30 分鐘到達教會準備事奉。 [cite: 1057]</p>
+            
+            <h3>禮拜前準備</h3>
             <ul>
-                [cite_start]<li><strong>時間：</strong> 禮拜前 30 分鐘就位。 [cite: 1057]</li>
-                [cite_start]<li><strong>職責：</strong> [cite: 1058-1064]
-                    <ul>
-                        <li>開啟窗戶、電燈、空調。</li>
-                        <li>發放週報，引導會眾往前坐。</li>
-                        <li>接待新朋友填寫資料卡。</li>
-                        <li>禮拜開始時關閉中間大門，僅留側門。</li>
-                    </ul>
-                </li>
-                [cite_start]<li><strong>司獻：</strong> 禮拜進行至「啟應」後進入會堂。奉獻時由後方集合，拿奉獻袋從最前排開始傳。 [cite: 1065-1066]</li>
-                [cite_start]<li><strong>結束工作：</strong> 協助點收奉獻、關閉電源門窗。 [cite: 1069]</li>
+                <li>將禮拜堂窗戶打開，準備週報，開啟電燈、空調。</li>
+                <li>招呼外來講員、家屬及來賓。</li>
+                <li>安排會友座位，招呼會友盡量往前坐。</li>
+                <li><strong>新朋友接待：</strong> 協助填寫資料卡，以便後續關懷。 [cite: 1062]</li>
+                <li>禮拜開始時，將中間大門關閉，僅留側門。 [cite: 1064]</li>
+            </ul>
+
+            <h3>禮拜進行中</h3>
+            <ul>
+                <li>招待同工於禮拜進行至「啟應」後，即可進入禮拜堂參加禮拜。 [cite: 1065]</li>
+                <li><strong>司獻：</strong> 於禮拜堂後方集合，奉獻時從後方進入至前面拿奉獻袋。奉獻袋交由最前面一排左側會眾開始傳。 </li>
+                <li>禮拜平安禮、殿樂結束後，才打開中間大木門。 [cite: 1068]</li>
+            </ul>
+
+            <h3>禮拜結束</h3>
+            <ul>
+                <li>協助計算奉獻金額。</li>
+                <li>將場地恢復，確認空調及電源均已確實關閉。</li>
             </ul>
         </section>
 
         <section id="music">
             <h2><i class="fas fa-music"></i> 音樂與影音服事</h2>
             
-            <h3>司琴</h3>
+            <h3>司琴 [cite: 1078-1089]</h3>
             <ul>
-                [cite_start]<li><strong>序樂：</strong> 禮拜前彈奏約 5 分鐘序樂，幫助會眾安靜心。 [cite: 1079]</li>
-                [cite_start]<li><strong>配合度：</strong> 需隨時注意司會或講員的臨時需求 (如臨時加唱)。 [cite: 1088]</li>
+                <li><strong>序樂：</strong> 以序樂幫助會眾安靜，約 5 分鐘。</li>
+                <li><strong>應變：</strong> 隨時注意司會手勢或現場狀況 (如臨時加唱、講道時間長短)，做適度調整。</li>
+                <li><strong>工具：</strong> 推薦使用 <a href="https://bhpct.github.io/liturgist/musician.html" target="_blank">教會司琴平台</a>，支援腳踏板翻頁。</li>
             </ul>
 
-            <h3>投影片 (PPT)</h3>
+            <h3>詩班 & 指揮 [cite: 1072-1077]</h3>
             <ul>
-                [cite_start]<li><strong>字體：</strong> 建議標楷體或粗黑體，至少 44 級字以上。 [cite: 1093]</li>
-                [cite_start]<li><strong>內容：</strong> 歌詞、啟應文、信仰告白需全文打出。 [cite: 1095]</li>
-                [cite_start]<li><strong>檔案：</strong> 存放在桌面「禮拜投影片」資料夾，檔名依日期編碼。 [cite: 1098]</li>
+                <li><strong>預備：</strong> 禮拜前 10 分鐘著裝完畢就座，預備心禮拜。</li>
+                <li><strong>衣著：</strong> 請於衣櫃前著裝完畢再走到座位上。</li>
+                <li><strong>善後：</strong> 禮拜後協助座位周遭整齊 (聖經、聖詩歸位)。</li>
             </ul>
 
-            <h3>音控</h3>
+            <h3>投影片 (PPT) [cite: 1091-1102]</h3>
             <ul>
-                [cite_start]<li><strong>測試：</strong> 提早接線、測試麥克風 (牧師專用為 1 號)。 [cite: 1111, 1115]</li>
-                [cite_start]<li><strong>錄音：</strong> 確保講道錄音正常，避免收音失敗。 [cite: 1116]</li>
-                [cite_start]<li><strong>善後：</strong> 聚會後務必檢查所有擴大機電源是否關閉。 [cite: 1113]</li>
+                <li><strong>製作：</strong> 字體建議標楷體或粗黑體，至少 44 級字以上。</li>
+                <li><strong>內容：</strong> 歌詞、啟應文、信仰告白需全文打出；講道篇僅列重點。</li>
+                <li><strong>存檔：</strong> 檔案請存放在桌面「禮拜投影片」資料夾，檔名：`禮拜投影片-YYMMDD`。</li>
+            </ul>
+
+            <h3>音控 [cite: 1110-1116]</h3>
+            <ul>
+                <li><strong>測試：</strong> 提早接線、測試麥克風 (牧師專用為 1 號)。</li>
+                <li><strong>錄音：</strong> 確保講道錄音正常。</li>
+                <li><strong>善後：</strong> 聚會後務必檢查所有擴大機電源是否關閉。</li>
             </ul>
             <div class="img-placeholder">(示意圖：音控台開關順序與設定)</div>
         </section>
