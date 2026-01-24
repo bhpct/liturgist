@@ -3,82 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>霧峰教會禮拜司會平台 (PCT標準文本版)</title>
+    <title>霧峰教會禮拜司會平台 (PPT內文修正版)</title>
     <style>
         /* ==================== */
-        /* CSS 樣式區 (A4列印優化) */
+        /* CSS 樣式區 */
         /* ==================== */
-        :root {
-            --primary: #2c3e50;
-            --accent: #c0392b; /* 長老教會紅 */
-            --stand-bg: #e67e22; /* 站立提示橘 */
-        }
+        :root { --primary: #2c3e50; --accent: #c0392b; --stand-bg: #e67e22; }
         body { font-family: "Microsoft JhengHei", "Heiti TC", sans-serif; margin: 0; display: flex; height: 100vh; background: #eee; }
         
         /* 左側設定欄 */
-        .sidebar {
-            width: 380px;
-            background: var(--primary);
-            color: white;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-sizing: border-box;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-        .control-group {
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        .sidebar { width: 380px; background: var(--primary); color: white; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
+        .control-group { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
         .control-group label { display: block; color: #bdc3c7; margin-bottom: 5px; font-size: 0.95em; }
-        .control-group input, .control-group select, .control-group textarea {
-            width: 100%; padding: 10px; border-radius: 4px; border: none; margin-bottom: 10px;
-            font-size: 1em; box-sizing: border-box; font-family: inherit;
-        }
-        .btn {
-            background: var(--accent); color: white; border: none; padding: 12px;
-            width: 100%; border-radius: 5px; font-size: 1.1em; cursor: pointer; font-weight: bold;
-            transition: 0.2s;
-        }
+        .control-group input, .control-group select, .control-group textarea { width: 100%; padding: 10px; border-radius: 4px; border: none; margin-bottom: 10px; font-size: 1em; box-sizing: border-box; }
+        .btn { background: var(--accent); color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-size: 1.1em; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn:hover { background: #a93226; }
         .btn-sec { background: #555; margin-top: 5px; }
-        .btn-scan { background: #27ae60; font-size: 0.9em; padding: 8px; margin-bottom: 10px; } 
 
         /* 右側預覽區 */
-        .preview { flex: 1; padding: 40px; overflow-y: auto; background: white; position: relative; }
+        .preview { flex: 1; padding: 40px; overflow-y: auto; background: white; }
         .script-box { max-width: 210mm; margin: auto; font-size: 18px; line-height: 1.6; padding-bottom: 50px; }
         
-        /* 腳本元素樣式 */
+        /* 腳本樣式 */
         .header { text-align: center; border-bottom: 3px double #333; padding-bottom: 20px; margin-bottom: 30px; }
         .item { margin-bottom: 35px; break-inside: avoid; }
         .title { font-weight: bold; font-size: 1.25em; color: var(--primary); border-bottom: 2px solid #ddd; display: block; margin-bottom: 12px; padding-bottom: 5px; }
         .bridge { background: #f8f9fa; padding: 10px 15px; border-left: 6px solid #999; display: block; margin-bottom: 12px; color: #444; font-style: italic; }
         .content { white-space: pre-wrap; display: block; color: #000; padding-left: 10px; border-left: 1px solid #eee; margin-left: 5px; }
         .note { font-size: 0.9em; color: #666; border: 1px dashed #bbb; padding: 10px; background: #fffdf0; margin-top: 8px; }
-        
-        /* 標記 */
         .stand { background: var(--stand-bg); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 8px; vertical-align: middle; }
         .ruan { color: #c0392b; font-weight: bold; text-decoration: underline; }
 
-        /* API 錯誤顯示區 */
-        .api-status { font-size: 0.85em; margin-bottom: 10px; padding: 5px; border-radius: 4px; display: none; }
-        .status-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .status-ok { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-
         @media print {
             .sidebar, .btn, .control-group { display: none !important; }
-            body, html { background: white; margin: 0; padding: 0; height: auto; width: 100%; overflow: visible; }
+            body, html { background: white; margin: 0; padding: 0; width: 100%; height: auto; overflow: visible; }
             .preview { display: block; width: 100%; margin: 0; padding: 0; position: static; overflow: visible; }
-            .script-box { max-width: 100%; width: 100%; margin: 0; padding: 20px; font-size: 14pt; line-height: 1.5; }
-            .ruan { color: black; font-weight: bold; text-decoration: none; border-bottom: 1px dotted black; }
-            .stand { color: black; border: 1px solid black; background: white; font-weight: bold; }
-            .title { color: black; border-bottom: 1px solid black; }
-            .bridge { background: white; border-left: 3px solid #ccc; color: #000; font-style: normal; font-weight: bold; }
-            .header { border-bottom: 1px solid black; }
+            .script-box { max-width: 100%; width: 100%; margin: 0; padding: 20px; font-size: 14pt; }
+            .ruan { color: black; text-decoration: none; border-bottom: 1px dotted black; }
+            .stand { color: black; border: 1px solid black; background: white; }
             .item { page-break-inside: avoid; }
         }
     </style>
@@ -86,22 +48,17 @@
 <body>
 
 <div class="sidebar">
-    <h2>⛪ 禮拜設定面板</h2>
+    <h2>⛪ 禮拜設定 (PPT修正版)</h2>
     
     <div class="control-group">
-        <label style="color:#ffcc00;">🔑 API Key (安全輸入)</label>
-        <p style="font-size:0.8em; color:#ccc; margin-top:0;">
-            請輸入 Key (系統會自動記憶)。
-        </p>
-        <input type="password" id="apiKey" placeholder="貼上您的 API Key" onchange="saveKey()">
+        <label style="color:#ffcc00;">🔑 API Key (請重新輸入)</label>
+        <input type="password" id="apiKey" placeholder="請貼上您的 API Key" onchange="saveKey()">
         
-        <label>AI 模型選擇</label>
-        <div id="scanStatus" class="api-status"></div>
-        <button class="btn btn-scan" onclick="scanModels()">🔍 偵測可用模型 (除錯用)</button>
+        <label>AI 模型</label>
         <select id="aiModel">
-            <option value="gemini-1.5-flash" selected>Gemini 1.5 Flash (推薦：免費額度高)</option>
-            <option value="gemini-1.5-pro">Gemini 1.5 Pro (高品質)</option>
-            <option value="gemini-pro">Gemini 1.0 Pro (舊版)</option>
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash (推薦)</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+            <option value="gemini-pro">Gemini 1.0 Pro</option>
         </select>
     </div>
 
@@ -112,7 +69,7 @@
             <option value="ch">第二場：華語 (11:00)</option>
         </select>
 
-        <label>日期 (自動週次)</label>
+        <label>日期</label>
         <input type="date" id="date" onchange="autoWeek()">
         <select id="week">
             <option value="1">第一週 (主禱文)</option>
@@ -134,30 +91,27 @@
 
     <div class="control-group" id="hymnGroup">
         <label>聖詩 (第一首)</label>
-        <input type="text" id="hymn1" placeholder="例如：43">
-        
+        <input type="text" id="hymn1" placeholder="43">
         <label>讚美 (獻詩團體)</label>
-        <input type="text" id="praiseTeam" value="聖歌隊" placeholder="例如：婦女團契">
-        
+        <input type="text" id="praiseTeam" value="聖歌隊">
         <label>回應詩 (第二首)</label>
-        <input type="text" id="hymn2" placeholder="例如：605">
-        
+        <input type="text" id="hymn2" placeholder="605">
         <label>差遣/頌榮 (第三首)</label>
         <div style="display:flex; gap:10px; margin-bottom:5px;">
             <label><input type="radio" name="endType" value="sending" checked> 差遣</label>
             <label><input type="radio" name="endType" value="doxology"> 頌榮</label>
         </div>
-        <input type="text" id="hymn3" placeholder="例如：402">
+        <input type="text" id="hymn3" placeholder="402">
     </div>
 
     <div class="control-group">
-        <label>啟應文篇數</label>
-        <input type="text" id="respNo" placeholder="例如：13">
+        <label>啟應文</label>
+        <input type="text" id="respNo" placeholder="13">
     </div>
 
     <div class="control-group">
         <label style="color:#ffcc00;">🙏 祈禱代禱重點</label>
-        <textarea id="customPrayer" rows="4" placeholder="例如：為王長老手術平安、為國家大選和平..."></textarea>
+        <textarea id="customPrayer" rows="4" placeholder="例如：為王長老手術平安..."></textarea>
     </div>
 
     <button class="btn" onclick="generate()">⚡ 產生司會腳本</button>
@@ -167,45 +121,34 @@
 <div class="preview">
     <div id="output" class="script-box">
         <div style="text-align:center; color:#888; margin-top:100px;">
-            <h3>1. 請先貼上 API Key<br>2. 點擊「產生司會腳本」<br>(資料庫已更新為標準 PPT 內容)</h3>
+            <h3>請貼上 API Key 並點擊「產生司會腳本」</h3>
         </div>
     </div>
 </div>
 
 <script>
-    // --- 經文資料庫：嚴格依據您提供的 PPT 內容 ---
-    [cite_start]// [cite: 1, 92, 180, 272, 364, 453, 542, 635, 728, 823]
+    // --- 嚴格遵守 PPT 內文 (不使用 AI 翻譯) ---
     const texts = {
         tw: {
-            [cite_start]// 第一週：主的祈禱文 (台) [cite: 1]
             1: `【主的祈禱文 (台)】\n阮在天裡的父，願你的名聖，你的國臨到，你的旨意得成，佇地裡親像佇天裡。\n阮的日食今仔日給阮。赦免阮的辜負，親像阮也有赦免辜負阮的人。\n莫得導阮入佇試，著救阮脫離彼個歹的。\n因為國，權能，榮光攏是你所有，\n代代無盡。阿們。\n（台語漢字本 太6：9-13）`,
             
-            [cite_start]// 第二週：使徒信經 (台) [cite: 180]
             2: `【使徒信經 (台)】\n我信上帝，全能的父，創造天、地的主宰。\n我信耶穌基督，上帝的獨生子，咱的主。祂對聖神投胎，對在室女馬利亞出世，佇本丟彼拉多任內受苦，釘十字架，死，埋葬，落陰府，第三日對死人中復活，升天，今坐佇全能父上帝的大旁，祂欲對遐閣來審判活人及死人。\n我信聖神，聖閣公同的教會，聖徒的相通，罪的赦免，肉體的復活，永遠的活命。\n阿們。`,
             
-            [cite_start]// 第三週：新的誡命 (台) [cite: 364]
             3: `【新的誡命 (台)】\n你著盡心、盡性、盡意疼主你的上帝。此個誡是大的，亦是頭一個，第二個亦相親像，是講，你著疼厝邊親像自己。此兩條誡是全律法及先知的總根頭。\n(台語漢字本 太22:37-40)\n我用新的誡命互恁，就是恁著相疼，親像我曾疼恁，恁亦著按呢相疼。恁若相疼，眾人欲對按呢知恁是我的學生。\n(台語漢字本 約13:34-35)`,
             
-            [cite_start]// 第四週：上帝十條誡 (台) [cite: 542]
             4: `【上帝十條誡 (台)】\n第1誡：我以外，你呣通有別的上帝。\n第2誡：呣通為著家己雕刻偶像，不論天頂、地上，及地下、水內所有的物攏呣通做伊的像。呣通敬拜伊，也呣通服事伊，因為我耶和華--你的上帝，斷斷呣容允用別個上帝匹配我。怨恨我者，我歸咎伊的罪，對父到子，到三四代；疼我、守我誡命者，我施恩互伊，直到千代。\n第3誡：呣通濫糝稱耶和華--你的上帝的名；因為濫糝稱伊的名的人，耶和華的確無掠伊做無罪。\n第4誡：當記得安息日，守伊做聖。六日內應該著磨做你一切的工，獨獨第七日就是向耶和華--你的上帝來守的安息。此日你及你的子、查某子、奴僕、女婢、精牲，以及踮佇你中間的出外人，一切的工攏呣通做；因為六日內，耶和華創造天、地、海，及彼中間萬物，第七日就息，所以耶和華賜福佇安息日，設立伊做聖。\n第5誡：著孝敬你的老父你的老母，互你的日子佇耶和華--你的上帝所賞賜你的地得著久長。\n第6誡：呣通害死人。\n第7誡：呣通行姦淫。\n第8誡：呣通偷提。\n第9誡：呣通做假的干證，陷害你的厝邊。\n第10誡：呣通貪你的厝邊的厝；也呣通貪你的厝邊的某、奴僕、女婢、牛、驢，以及你的厝邊一切所有的。\n(台語漢字本 出20:3-17)`,
             
-            [cite_start]// 第五週：台灣基督長老教會信仰告白 (台) [cite: 728]
             5: `【台灣基督長老教會信仰告白 (台)】\n阮信上帝，創造、統治人與萬物的獨一真神。祂是歷史與世界的主，施行審判和拯救。祂的子對聖神投胎，對在室女馬利亞出世做人，做咱的兄弟，就是人類的救主耶穌基督，對祂的受苦、釘十字架死、復活，顯明上帝的仁愛與公義，使咱與上帝復和。祂的神，就是聖神，站在咱中間，賞賜氣力，使阮在萬百姓中做見證，直到主復來。\n\n阮信，聖經是上帝所啟示的，記載祂的救贖，做阮信仰與生活的準則。\n\n阮信，教會是上帝百姓的團契，受召來宣揚耶穌基督的拯救，做和解的使者，是普世的，復釘根在本地，認同所有的住民，通過愛與受苦，來成做盼望的記號。\n\n阮信，人對上帝的恩典來悔改，罪得赦免，用虔誠、仁愛、與獻身的生活歸榮光上帝。\n\n阮信，上帝使人有尊嚴、才能，以及鄉土，來有份於祂的創造，負責任和祂相與管理世界。\n\n對如此，人有社會、政治及經濟的制度，也有文藝、科學，復有追求真神的心。總是人有罪，誤用這些恩賜，破壞人、萬物、與上帝的關係。所以，人著倚靠耶穌基督的救恩。祂要使人對罪惡中得著釋放，使受壓制的得著自由、平等，在基督成做新創造的人，使世界成做祂的國，充滿公義、平安與歡喜。\n阿們`
         },
         ch: {
-            [cite_start]// 第一週：主的祈禱文 (華) [cite: 92]
-            1: `【主的祈禱文 (華)】\n我們在天上的父：願人都尊祢的名為聖。\n願祢的國度降臨；願祢的旨意行在地上，\n如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是祢的，直到永遠。阿們！\n（和合本修訂版 太6：9-13）`,
+            1: `【主禱文 (華)】\n我們在天上的父：願人都尊祢的名為聖。\n願祢的國度降臨；願祢的旨意行在地上，\n如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是祢的，直到永遠。阿們！\n（和合本修訂版 太6：9-13）`,
             
-            [cite_start]// 第二週：使徒信經 (華) [cite: 272]
             2: `【使徒信經 (華)】\n我信上帝，全能的父，創造天地的主。\n\n我信我主耶穌基督，上帝的獨生子。祂從聖靈感孕，由童貞女馬利亞所生，在本丟彼拉多手下受難，被釘於十字架，受死，埋葬，降在陰間，第三天從死人中復活，升天，坐在全能父上帝的右邊，將來必從那裡降臨，審判活人與死人。\n我信聖靈，聖而公的教會，聖徒的相通，罪的赦免，身體的復活，永遠的生命。\n阿們。`,
             
-            [cite_start]// 第三週：新的誡命 (華) [cite: 453]
             3: `【新的誡命 (華)】\n你要盡心、盡性、盡意愛主你的上帝。這是誡命中的第一，且是最大的 。其次也相倣，就是要愛人如己。這兩條誡命是律法和先知一切道理的總綱。\n(和合本 太22:37-40)\n我賜給你們一條新命令，乃是叫你們彼此相愛；我怎樣愛你們，你們也要怎樣相愛。你們若有彼此相愛的心，眾人因此就認出你們是我的門徒了。  \n(和合本 約13:34-35)`,
             
-            [cite_start]// 第四週：十誡 (華) [cite: 635]
             4: `【十誡 (華)】\n第1誡：除了我以外，你不可有別的神。\n第2誡：不可為自己雕刻偶像，也不可做什麼形像彷彿上天、下地，和地底下、水中的百物。 不可跪拜那些像，也不可事奉他，因為我耶和華─你的神是忌邪的神。恨我的，我必追討他的罪，自父及子，直到三四代； 愛我、守我誡命的，我必向他們發慈愛，直到千代。\n第3誡：不可妄稱耶和華─你神的名；因為妄稱耶和華名的，耶和華必不以他為無罪。\n第4誡：當記念安息日，守為聖日。六日要勞碌做你一切的工，但第七日是向耶和華─你神當守的安息日。這一日你和你的兒女、僕婢、牲畜，並你城裡寄居的客旅，無論何工都不可做； 因為六日之內，耶和華造天、地、海，和其中的萬物，第七日便安息，所以耶和華賜福與安息日，定為聖日。\n第5誡：當孝敬父母，使你的日子在耶和華─你神所賜你的地上得以長久。\n第6誡：不可殺人。\n第7誡：不可姦淫。\n第8誡：不可偷盜。\n第9誡：不可作假見證陷害人。\n第10誡：不可貪戀人的房屋；也不可貪戀人的妻子、僕婢、牛驢，並他一切所有的。\n(和合本 出20:3-17)`,
             
-            [cite_start]// 第五週：台灣基督長老教會信仰告白 (華) [cite: 823]
             5: `【台灣基督長老教會信仰告白 (華)】\n我們信上帝，創造、統治人與萬物的獨一真神。祂是歷史與世界的主，施行審判和拯救。祂的兒子，從聖靈投胎，由童貞女馬利亞降生為人，成為我們的弟兄，就是人類的救主耶穌基督，藉著祂的受苦、釘十字架死、復活，彰顯了上帝的仁愛與公義，使我們與上帝復和。祂的靈，就是聖靈，住在我們中間，賜能力，使我們在萬民中做見證，直到主再來。\n\n我們信，聖經是上帝所啟示的，記載祂的救贖，做為我們信仰與生活的準則。\n\n我們信，教會是上帝子民的團契，蒙召來宣揚耶穌基督的拯救，做和解的使者，是普世的，且根植於本地，認同所有的住民，通過愛與受苦，而成為盼望的記號。\n\n我們信，人藉著上帝的恩典而悔改，罪得赦免，以虔誠、仁愛與獻身的生活歸榮耀於上帝。\n\n我們信，上帝賜給人有尊嚴、才能，以及鄉土，使人有份於祂的創造，負責任與祂一起管理世界。\n\n因此，人有社會、政治及經濟的制度，也有文藝、科學，且有追求真神的心。但是人有罪，誤用這些恩賜，破壞人、萬物、與上帝的關係。所以，人當倚靠耶穌基督的救恩。祂要使人從罪惡中得釋放，使受壓制的人得自由、平等，在基督裡成為新創造的人，使世界成為祂的國度，充滿公義、平安與喜樂。\n阿們`
         }
     };
@@ -213,72 +156,32 @@
     function updateUI() { document.getElementById('hymnGroup').style.display = document.getElementById('serviceType').value === 'tw' ? 'block' : 'none'; }
     function autoWeek() { const d = new Date(document.getElementById('date').value); if(!isNaN(d)) document.getElementById('week').value = Math.ceil(d.getDate()/7) > 5 ? 5 : Math.ceil(d.getDate()/7); }
     
-    // --- Local Storage: 自動儲存 Key ---
+    // 自動儲存與讀取 Key
     function saveKey() {
         const key = document.getElementById('apiKey').value.trim();
-        if (key) { localStorage.setItem('church_api_key', key); }
+        if (key) { 
+            try { localStorage.setItem('church_api_key', key); } 
+            catch(e) { console.warn("Cannot save key:", e); }
+        }
     }
     
     window.onload = function() {
-        const savedKey = localStorage.getItem('church_api_key');
-        if (savedKey) { document.getElementById('apiKey').value = savedKey; }
+        try {
+            const savedKey = localStorage.getItem('church_api_key');
+            if (savedKey) { document.getElementById('apiKey').value = savedKey; }
+        } catch(e) {}
         document.getElementById('date').valueAsDate = new Date();
         autoWeek();
         updateUI();
     };
 
-    // --- 掃描可用模型 (除錯用) ---
-    async function scanModels() {
-        const apiKey = document.getElementById('apiKey').value.trim();
-        const statusDiv = document.getElementById('scanStatus');
-        const select = document.getElementById('aiModel');
-        
-        if (!apiKey) { alert("請先輸入 API Key"); return; }
+    // 錯誤監聽
+    window.onerror = function(msg, url, line) {
+        alert(`❌ 發生錯誤 (Line ${line}):\n${msg}\n請檢查程式碼是否完整複製。`);
+    };
 
-        statusDiv.style.display = 'block';
-        statusDiv.className = 'api-status';
-        statusDiv.innerHTML = '⏳ 正在連線 Google 查詢...';
-
-        try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-            const data = await response.json();
-
-            if (!response.ok) {
-                statusDiv.className = 'api-status status-error';
-                statusDiv.innerHTML = `⚠️ 查詢失敗 (HTTP ${response.status})<br>訊息: ${data.error ? data.error.message : '您的 Key 可能已被封鎖'}`;
-                return;
-            }
-
-            if (data.models) {
-                const validModels = data.models.filter(m => m.supportedGenerationMethods.includes("generateContent"));
-                if (validModels.length > 0) {
-                    select.innerHTML = "";
-                    validModels.forEach(m => {
-                        if(m.name.includes("gemini")) {
-                            const cleanName = m.name.replace("models/", "");
-                            const option = document.createElement("option");
-                            option.value = cleanName;
-                            option.text = `✅ ${cleanName}`;
-                            // 預設優先選取 Flash
-                            if (cleanName === "gemini-1.5-flash") option.selected = true;
-                            select.appendChild(option);
-                        }
-                    });
-                    statusDiv.className = 'api-status status-ok';
-                    statusDiv.innerHTML = `🎉 成功偵測到 ${validModels.length} 個可用模型！`;
-                } else {
-                    statusDiv.innerHTML = `⚠️ 連線成功但無可用模型。`;
-                }
-            }
-        } catch (e) {
-            statusDiv.className = 'api-status status-error';
-            statusDiv.innerHTML = `⚠️ 連線錯誤: ${e.message}`;
-        }
-    }
-
-    // --- API 呼叫 ---
     async function getAIPrayer(key, type, custom, preacher) {
-        const model = document.getElementById('aiModel').value; // 使用選單選擇的模型 (預設 Flash)
+        const model = document.getElementById('aiModel').value;
         const lang = type === 'tw' ? '台語' : '華語';
         const pronoun = type === 'tw' ? '使用「阮」代表我們(排除上帝)，嚴禁使用「咱」' : '使用「我們」';
         const context = type === 'tw' ? '司會帶領的禮拜中段祈禱' : '敬拜團主領的祈禱';
@@ -292,7 +195,7 @@
         3. 特別代禱：${custom}。
         4. 為證道牧師 ${preacher} 的信息與家庭代禱。
         5. 結尾：奉主耶穌的名。
-        請直接輸出禱告文，不要有標題。`;
+        請直接輸出禱告文。`;
 
         try {
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
@@ -303,170 +206,119 @@
             
             if (!response.ok) {
                 const errData = await response.json();
-                return `<div class="api-error">⚠️ API 錯誤 (${response.status}): ${errData.error ? errData.error.message : '未知錯誤'}</div>`;
+                const errMsg = errData.error ? errData.error.message : response.statusText;
+                alert(`⚠️ API 連線錯誤 (${response.status})\n訊息: ${errMsg}\n\n可能原因：\n1. API Key 不正確\n2. 機構政策阻擋 (請切換模型或使用個人帳號)\n3. 額度已滿`);
+                return `(生成失敗: ${errMsg})`;
             }
 
             const data = await response.json();
-            
             if (data.candidates && data.candidates[0].content) {
                 let text = data.candidates[0].content.parts[0].text;
                 if(type === 'tw') text = text.replace(/阮/g, '<span class="ruan">阮</span>');
                 return text;
-            } else {
-                return `<div class="api-error">⚠️ 內容生成為空</div>`;
             }
+            return "(API 回傳內容為空)";
         } catch (e) {
-            return `<div class="api-error">⚠️ 連線錯誤: ${e.message}</div>`;
+            alert(`⚠️ 網路連線錯誤: ${e.message}\n請確認您的網路連線，或是否被瀏覽器阻擋。`);
+            return `(連線錯誤: ${e.message})`;
         }
     }
 
     async function generate() {
-        const apiKey = document.getElementById('apiKey').value.trim();
-        if (!apiKey) { alert("請先輸入 API Key！"); return; }
+        // 1. 驗證按鈕是否運作
+        // alert("開始產生..."); // 除錯用，確認按鈕沒壞
 
-        const type = document.getElementById('serviceType').value;
-        const date = document.getElementById('date').value;
-        const week = document.getElementById('week').value;
-        const preacher = document.getElementById('preacher').value;
-        const topic = document.getElementById('topic').value;
-        const scripture = document.getElementById('scripture').value;
-        const respNo = document.getElementById('respNo').value;
-        const customPrayer = document.getElementById('customPrayer').value;
-        
-        const standMark = `<span class="stand">*站立</span>`;
-        const weekName = ["", "祈禱 (主禱文)", "信仰告白 (使徒信經)", "訓勉 (新的誡命)", "訓勉 (上帝十條誡)", "信仰告白 (長老教會)"][week];
-        const weekText = texts[type][week];
-        const reportText = `(重要標註：聚會時間與內容、禮拜服事 請兄姊們注意觀看；奉獻資料請兄姊們過目，如有錯誤請向財務部提出更正。僅報告教會消息、團契消息即可；肢體消息留給交通人員。)`;
-        const postludeText = `(司會宣佈)：禮拜還沒結束，請安靜回想今日在禮拜中的領受，殿樂結束後要進行平安禮。`;
+        try {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            if (!apiKey) { alert("請先輸入 API Key！"); return; }
 
-        let weekBridge = "";
-        if (type === 'tw') {
-            if (week == 1) weekBridge = `請咱依然站立，咱用主所教示的祈禱文來祈禱：`;
-            else if (week == 2) weekBridge = `請咱依然站立，咱作伙用使徒信經來告白咱的信仰：`;
-            else if (week == 3 || week == 4) weekBridge = `請咱依然站立，作伙讀${week == 3 ? '新的誡命' : '上帝十條誡'}，來提醒自己、彼此勸勉：`;
-            else weekBridge = `請咱依然站立，咱用台灣基督長老教會信仰告白來告白咱的信仰：`;
-        } else {
-            if (week == 1) weekBridge = `請我們依然站立，我們用主所教導的禱告文來祈禱：`;
-            else if (week == 2) weekBridge = `請我們依然站立，我們同心用使徒信經來告白我們的信仰：`;
-            else weekBridge = `請我們依然站立，讓我們齊聲朗讀...`;
-        }
-
-        document.getElementById('output').innerHTML = "<h3 style='text-align:center;'>⏳ 正在連線 AI 產生禱告文...</h3>";
-        
-        const aiPrayerText = await getAIPrayer(apiKey, type, customPrayer, preacher);
-
-        let html = `<div class="header">
-            <h1>${date} 霧峰教會禮拜程序</h1>
-            <h2>${type === 'tw' ? '第一場：台語禮拜 (09:30)' : '第二場：華語禮拜 (11:00)'}</h2>
-            <p>主禮：${preacher} | 講題：${topic}</p>
-        </div>`;
-
-        if (type === 'tw') {
-            const h1 = document.getElementById('hymn1').value;
-            const h2 = document.getElementById('hymn2').value;
-            const h3 = document.getElementById('hymn3').value;
-            const praiseTeam = document.getElementById('praiseTeam').value || "聖歌隊";
-            const endType = document.querySelector('input[name="endType"]:checked').value;
-
-            html += `<div class="item"><span class="title">1. 宣召</span>
-                <span class="bridge">司會：(直接讀經文，不可說「宣召」)</span></div>`;
-
-            html += `<div class="item"><span class="title">${standMark} 2. 聖詩</span>
-                <span class="bridge">司會：相與來吟詩，讚美上帝，聖詩 ${h1} 首，聖詩 ${h1} 首。請起立吟全首。</span></div>`;
-
-            html += `<div class="item"><span class="title">${standMark} 3. ${weekName}</span>
-                <span class="bridge">司會：${weekBridge}</span>
-                <span class="content" style="border:1px solid #ccc; padding:10px;">${weekText}</span></div>`;
-
-            html += `<div class="item"><span class="title">4. 啟應</span>
-                <span class="bridge">司會：(請坐) 作伙交讀啟應文第 ${respNo} 篇。我來讀，請您來應。</span></div>`;
-
-            html += `<div class="item"><span class="title">5. 祈禱 (司會帶領)</span>
-                <span class="bridge">司會：(帶領簡短祈禱)</span>
-                <span class="content" style="border-left:4px solid var(--accent); padding-left:10px;">${aiPrayerText}</span></div>`;
-
-            html += `<div class="item"><span class="title">6. 讚美</span>
-                <span class="bridge">司會：請 ${praiseTeam} 來頌讚。</span>
-                <span class="content">(${praiseTeam} 獻詩)</span></div>`;
-
-            html += `<div class="item"><span class="title">7. 聖經</span>
-                <span class="bridge">司會：來聽上帝的話，記載於 ${scripture}。</span>
-                <span class="content">(讀畢) 司會：願主將祂的話，刻在<span class="ruan">阮</span>的心。</span></div>`;
-
-            html += `<div class="item"><span class="title">8. 講道</span>
-                <span class="bridge">司會：此時請 ${preacher} 來證道，題目是「${topic}」。</span></div>`;
-
-            html += `<div class="item"><span class="title">9. 祈禱 (講員)</span><span class="content">(講員祈禱)</span></div>`;
-
-            html += `<div class="item"><span class="title">${standMark} 10. 回應詩</span>
-                <span class="bridge">司會：相與來吟回應的詩，聖詩 ${h2} 首。請起立...</span></div>`;
-
-            html += `<div class="item"><span class="title">11. 奉獻</span>
-                <span class="bridge">司會：(請坐) 咱用奉獻來回應主的恩典。</span>
-                <span class="note">(奉獻後) 司會：請起立唱 聖詩 380 首 (甘心的奉獻)</span></div>`;
-
-            html += `<div class="item"><span class="title">12. 金句/報告/交通</span>
-                <span class="bridge">司會：(讀金句、報告)... (牧師交通)</span>
-                <span class="note">${reportText}</span></div>`;
-
-            html += `<div class="item"><span class="title">${standMark} 13. 公禱</span>
-                <span class="note">(會眾先唱 聖詩 330 主，聽阮祈禱)</span>
-                <span class="bridge">司會：請起立。(此段司會不需禱告)</span></div>`;
-
-            html += `<div class="item"><span class="title">${standMark} 14. ${endType==='sending'?'祝福差遣':'頌榮'}</span>
-                <span class="bridge">司會：來吟${endType==='sending'?'祝福':'頌榮'}的詩，聖詩 ${h3} 首。吟詩後請 ${preacher} 祝禱。</span></div>`;
+            const type = document.getElementById('serviceType').value;
+            const date = document.getElementById('date').value;
+            const week = document.getElementById('week').value;
+            const preacher = document.getElementById('preacher').value;
+            const topic = document.getElementById('topic').value;
+            const scripture = document.getElementById('scripture').value;
+            const respNo = document.getElementById('respNo').value;
+            const customPrayer = document.getElementById('customPrayer').value;
             
-            html += `<div class="item"><span class="title">15. 祝禱/阿們頌/殿樂/平安禮</span>
-                <span class="note">(阿們頌：聖詩 643 首)</span>
-                <span class="content" style="color:blue; margin-top:10px;">${postludeText}</span></div>`;
-        }
-
-        // ================= 華語第二場 =================
-        else {
-            html += `<div class="item"><span class="title">1. 宣召</span>
-                <span class="bridge">司會：(直接讀經文)</span></div>`;
-
-            html += `<div class="item"><span class="title">${standMark} 2. 敬拜</span>
-                <span class="bridge">司會：(由敬拜團主領，司會勿說「禮拜開始」)</span></div>`;
-
-            html += `<div class="item"><span class="title">3. 祈禱 (敬拜團主領)</span>
-                <span class="bridge">司會：(此段由敬拜團主領帶領禱告)</span>
-                <span class="content" style="border-left:4px solid var(--accent); padding-left:10px;">${aiPrayerText}</span></div>`;
-
-            html += `<div class="item"><span class="title">${standMark} 4. ${weekName}</span>
-                <span class="bridge">司會：${weekBridge}</span>
-                <span class="content" style="border:1px solid #ccc; padding:10px;">${weekText}</span></div>`;
+            const standMark = `<span class="stand">*站立</span>`;
             
-            html += `<div class="item"><span class="title">5. 聖經</span>
-                <span class="bridge">司會：(請坐) 我們聆聽上帝的話，記載在 ${scripture}。</span>
-                <span class="content">(讀畢) 司會：求主將祂的話，刻在我們的心。</span></div>`;
+            // 安全存取經文
+            let weekText = "";
+            if (texts[type] && texts[type][week]) {
+                weekText = texts[type][week];
+            } else {
+                weekText = "(錯誤：找不到該週次的經文資料)";
+            }
 
-            html += `<div class="item"><span class="title">6. 講道</span>
-                <span class="bridge">司會：現在邀請 ${preacher} 為我們證道，主題是「${topic}」。</span></div>`;
+            const weekName = ["", "祈禱 (主禱文)", "信仰告白 (使徒信經)", "訓勉 (新的誡命)", "訓勉 (上帝十條誡)", "信仰告白 (長老教會)"][week];
+            const reportText = `(重要標註：聚會時間與內容、禮拜服事 請兄姊們注意觀看；奉獻資料請兄姊們過目，如有錯誤請向財務部提出更正。僅報告教會消息、團契消息即可；肢體消息留給交通人員。)`;
+            const postludeText = `(司會宣佈)：禮拜還沒結束，請安靜回想今日在禮拜中的領受，殿樂結束後要進行平安禮。`;
 
-            html += `<div class="item"><span class="title">7. 祈禱 (講員)</span><span class="content">(講員祈禱)</span></div>`;
+            let weekBridge = "";
+            if (type === 'tw') {
+                if (week == 1) weekBridge = `請咱依然站立，咱用主所教示的祈禱文來祈禱：`;
+                else if (week == 2) weekBridge = `請咱依然站立，咱作伙用使徒信經來告白咱的信仰：`;
+                else if (week == 3 || week == 4) weekBridge = `請咱依然站立，作伙讀${week == 3 ? '新的誡命' : '上帝十條誡'}，來提醒自己、彼此勸勉：`;
+                else weekBridge = `請咱依然站立，咱用台灣基督長老教會信仰告白來告白咱的信仰：`;
+            } else {
+                if (week == 1) weekBridge = `請我們依然站立，我們用主所教導的禱告文來祈禱：`;
+                else if (week == 2) weekBridge = `請我們依然站立，我們同心用使徒信經來告白我們的信仰：`;
+                else weekBridge = `請我們依然站立，讓我們齊聲朗讀...`;
+            }
 
-            html += `<div class="item"><span class="title">${standMark} 8. 回應詩 (敬拜團)</span>
-                <span class="bridge">司會：(由敬拜讚美團主領帶領，司會不用接話)</span></div>`;
+            document.getElementById('output').innerHTML = "<h3 style='text-align:center;'>⏳ 正在連線 AI 產生禱告文...</h3>";
+            
+            const aiPrayerText = await getAIPrayer(apiKey, type, customPrayer, preacher);
 
-            html += `<div class="item"><span class="title">9. 奉獻</span>
-                <span class="bridge">司會：(請坐) 這時我們要奉獻，請兄姊們預備來奉獻。</span>
-                <span class="note">奉獻詩：聖詩 380 首 (甘心的奉獻)</span></div>`;
+            let html = `<div class="header">
+                <h1>${date} 霧峰教會禮拜程序</h1>
+                <h2>${type === 'tw' ? '第一場：台語禮拜 (09:30)' : '第二場：華語禮拜 (11:00)'}</h2>
+                <p>主禮：${preacher} | 講題：${topic}</p>
+            </div>`;
 
-            html += `<div class="item"><span class="title">10. 金句/報告/交通</span>
-                <span class="note">${reportText}</span></div>`;
+            if (type === 'tw') {
+                const h1 = document.getElementById('hymn1').value;
+                const h2 = document.getElementById('hymn2').value;
+                const h3 = document.getElementById('hymn3').value;
+                const praiseTeam = document.getElementById('praiseTeam').value || "聖歌隊";
+                const endType = document.querySelector('input[name="endType"]:checked').value;
 
-            html += `<div class="item"><span class="title">${standMark} 11. 公禱</span>
-                <span class="bridge">司會：請起立。(此段司會不需禱告)</span></div>`;
+                html += `<div class="item"><span class="title">1. 宣召</span><span class="bridge">司會：(直接讀經文，不可說「宣召」)</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 2. 聖詩</span><span class="bridge">司會：相與來吟詩，讚美上帝，聖詩 ${h1} 首，聖詩 ${h1} 首。請起立吟全首。</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 3. ${weekName}</span><span class="bridge">司會：${weekBridge}</span><span class="content" style="border:1px solid #ccc; padding:10px;">${weekText}</span></div>`;
+                html += `<div class="item"><span class="title">4. 啟應</span><span class="bridge">司會：(請坐) 作伙交讀啟應文第 ${respNo} 篇。我來讀，請您來應。</span></div>`;
+                html += `<div class="item"><span class="title">5. 祈禱 (司會帶領)</span><span class="bridge">司會：(帶領簡短祈禱)</span><span class="content" style="border-left:4px solid var(--accent); padding-left:10px;">${aiPrayerText}</span></div>`;
+                html += `<div class="item"><span class="title">6. 讚美</span><span class="bridge">司會：請 ${praiseTeam} 來頌讚。</span><span class="content">(${praiseTeam} 獻詩)</span></div>`;
+                html += `<div class="item"><span class="title">7. 聖經</span><span class="bridge">司會：來聽上帝的話，記載於 ${scripture}。</span><span class="content">(讀畢) 司會：願主將祂的話，刻在<span class="ruan">阮</span>的心。</span></div>`;
+                html += `<div class="item"><span class="title">8. 講道</span><span class="bridge">司會：此時請 ${preacher} 來證道，題目是「${topic}」。</span></div>`;
+                html += `<div class="item"><span class="title">9. 祈禱 (講員)</span><span class="content">(講員祈禱)</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 10. 回應詩</span><span class="bridge">司會：相與來吟回應的詩，聖詩 ${h2} 首。請起立...</span></div>`;
+                html += `<div class="item"><span class="title">11. 奉獻</span><span class="bridge">司會：(請坐) 咱用奉獻來回應主的恩典。</span><span class="note">(奉獻後) 司會：請起立唱 聖詩 380 首 (甘心的奉獻)</span></div>`;
+                html += `<div class="item"><span class="title">12. 金句/報告/交通</span><span class="bridge">司會：(讀金句、報告)... (牧師交通)</span><span class="note">${reportText}</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 13. 公禱</span><span class="note">(會眾先唱 聖詩 330 主，聽阮祈禱)</span><span class="bridge">司會：請起立。(此段司會不需禱告)</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 14. ${endType==='sending'?'祝福差遣':'頌榮'}</span><span class="bridge">司會：來吟${endType==='sending'?'祝福':'頌榮'}的詩，聖詩 ${h3} 首。吟詩後請 ${preacher} 祝禱。</span></div>`;
+                html += `<div class="item"><span class="title">15. 祝禱/阿們頌/殿樂/平安禮</span><span class="note">(阿們頌：聖詩 643 首)</span><span class="content" style="color:blue; margin-top:10px;">${postludeText}</span></div>`;
+            } else {
+                html += `<div class="item"><span class="title">1. 宣召</span><span class="bridge">司會：(直接讀經文)</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 2. 敬拜</span><span class="bridge">司會：(由敬拜團主領，司會勿說「禮拜開始」)</span></div>`;
+                html += `<div class="item"><span class="title">3. 祈禱 (敬拜團主領)</span><span class="bridge">司會：(此段由敬拜團主領帶領禱告)</span><span class="content" style="border-left:4px solid var(--accent); padding-left:10px;">${aiPrayerText}</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 4. ${weekName}</span><span class="bridge">司會：${weekBridge}</span><span class="content" style="border:1px solid #ccc; padding:10px;">${weekText}</span></div>`;
+                html += `<div class="item"><span class="title">5. 聖經</span><span class="bridge">司會：(請坐) 我們聆聽上帝的話，記載在 ${scripture}。</span><span class="content">(讀畢) 司會：求主將祂的話，刻在我們的心。</span></div>`;
+                html += `<div class="item"><span class="title">6. 講道</span><span class="bridge">司會：現在邀請 ${preacher} 為我們證道，主題是「${topic}」。</span></div>`;
+                html += `<div class="item"><span class="title">7. 祈禱 (講員)</span><span class="content">(講員祈禱)</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 8. 回應詩 (敬拜團)</span><span class="bridge">司會：(由敬拜讚美團主領帶領，司會不用接話)</span></div>`;
+                html += `<div class="item"><span class="title">9. 奉獻</span><span class="bridge">司會：(請坐) 這時我們要奉獻，請兄姊們預備來奉獻。</span><span class="note">奉獻詩：聖詩 380 首 (甘心的奉獻)</span></div>`;
+                html += `<div class="item"><span class="title">10. 金句/報告/交通</span><span class="note">${reportText}</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 11. 公禱</span><span class="bridge">司會：請起立。(此段司會不需禱告)</span></div>`;
+                html += `<div class="item"><span class="title">${standMark} 12. 祝福差遣</span><span class="bridge">司會：唱詩 「賜福與你」。</span></div>`;
+                html += `<div class="item"><span class="title">13. 祝禱/殿樂/平安禮</span><span class="content" style="color:blue;">${postludeText}</span></div>`;
+            }
 
-            html += `<div class="item"><span class="title">${standMark} 12. 祝福差遣</span>
-                <span class="bridge">司會：唱詩 「賜福與你」。</span></div>`;
-
-            html += `<div class="item"><span class="title">13. 祝禱/殿樂/平安禮</span>
-                <span class="content" style="color:blue;">${postludeText}</span></div>`;
+            document.getElementById('output').innerHTML = html;
+        } catch (error) {
+            alert("程式執行錯誤:\n" + error.message);
         }
-
-        document.getElementById('output').innerHTML = html;
     }
 
     document.getElementById('date').valueAsDate = new Date();
