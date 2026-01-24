@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>霧峰教會禮拜司會平台 (模型偵測版)</title>
+    <title>霧峰教會禮拜司會平台 (PCT標準文本版)</title>
     <style>
         /* ==================== */
-        /* CSS 樣式區 */
+        /* CSS 樣式區 (A4列印優化) */
         /* ==================== */
         :root {
             --primary: #2c3e50;
@@ -46,7 +46,7 @@
         }
         .btn:hover { background: #a93226; }
         .btn-sec { background: #555; margin-top: 5px; }
-        .btn-scan { background: #27ae60; font-size: 0.9em; padding: 8px; margin-bottom: 10px; } /* 綠色偵測鈕 */
+        .btn-scan { background: #27ae60; font-size: 0.9em; padding: 8px; margin-bottom: 10px; } 
 
         /* 右側預覽區 */
         .preview { flex: 1; padding: 40px; overflow-y: auto; background: white; position: relative; }
@@ -65,13 +65,10 @@
         .ruan { color: #c0392b; font-weight: bold; text-decoration: underline; }
 
         /* API 錯誤顯示區 */
-        .api-status { 
-            font-size: 0.85em; margin-bottom: 10px; padding: 5px; border-radius: 4px; display: none;
-        }
+        .api-status { font-size: 0.85em; margin-bottom: 10px; padding: 5px; border-radius: 4px; display: none; }
         .status-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .status-ok { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
 
-        /* --- 列印模式專用 (強制 A4 排版) --- */
         @media print {
             .sidebar, .btn, .control-group { display: none !important; }
             body, html { background: white; margin: 0; padding: 0; height: auto; width: 100%; overflow: visible; }
@@ -92,18 +89,20 @@
     <h2>⛪ 禮拜設定面板</h2>
     
     <div class="control-group">
-        <label>API Key (企業版)</label>
-        <input type="password" id="apiKey" value="AIzaSyC3H1-q4088uq2_94Np6bHeleNKwfn7g0k" readonly style="background:#555; color:#ccc;">
+        <label style="color:#ffcc00;">🔑 API Key (安全輸入)</label>
+        <p style="font-size:0.8em; color:#ccc; margin-top:0;">
+            請輸入 Key (系統會自動記憶)。
+        </p>
+        <input type="password" id="apiKey" placeholder="貼上您的 API Key" onchange="saveKey()">
         
         <label>AI 模型選擇</label>
         <div id="scanStatus" class="api-status"></div>
-        <button class="btn btn-scan" onclick="scanModels()">🔍 點此偵測可用模型</button>
+        <button class="btn btn-scan" onclick="scanModels()">🔍 偵測可用模型 (除錯用)</button>
         <select id="aiModel">
-            <option value="gemini-1.5-pro">Gemini 1.5 Pro (預設嘗試)</option>
-            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-            <option value="gemini-pro">Gemini 1.0 Pro</option>
+            <option value="gemini-1.5-flash" selected>Gemini 1.5 Flash (推薦：免費額度高)</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro (高品質)</option>
+            <option value="gemini-pro">Gemini 1.0 Pro (舊版)</option>
         </select>
-        <small style="color:#aaa; display:block; margin-top:5px;">若上方偵測成功，請從選單挑選一個使用。</small>
     </div>
 
     <div class="control-group">
@@ -158,7 +157,6 @@
 
     <div class="control-group">
         <label style="color:#ffcc00;">🙏 祈禱代禱重點</label>
-        <p style="font-size:0.8em; color:#ccc; margin-top:0;">輸入內容將傳送至您選擇的模型。</p>
         <textarea id="customPrayer" rows="4" placeholder="例如：為王長老手術平安、為國家大選和平..."></textarea>
     </div>
 
@@ -169,92 +167,118 @@
 <div class="preview">
     <div id="output" class="script-box">
         <div style="text-align:center; color:#888; margin-top:100px;">
-            <h3>1. 請先點擊「偵測可用模型」<br>2. 選擇可用項目後，點擊「產生司會腳本」</h3>
+            <h3>1. 請先貼上 API Key<br>2. 點擊「產生司會腳本」<br>(資料庫已更新為標準 PPT 內容)</h3>
         </div>
     </div>
 </div>
 
 <script>
-    // --- 經文資料庫：完全正確版 ---
+    // --- 經文資料庫：嚴格依據您提供的 PPT 內容 ---
+    [cite_start]// [cite: 1, 92, 180, 272, 364, 453, 542, 635, 728, 823]
     const texts = {
         tw: {
-            1: `【主的祈禱文 (台語)】\n阮在天上的父，願祢的名聖，祢的國臨到，祢的旨意得成在地上，親像在天上。阮日用的飲食，今仔日賜給阮。赦免阮的罪，親像阮亦有赦免得罪阮的人。不求引導阮入於試探，拯救阮脫離那邪惡者。因為國、權能、榮光，攏是祢所有的，代代無盡。阿們。`,
-            2: `【使徒信經 (台語正確版)】\n我信上帝，全能的父，創造天地的主。\n我信耶穌基督，上帝的獨生子，咱的主。\n祂由聖靈成孕，由童貞女馬利亞所生；\n在本丟彼拉多手下受難，被釘十字架，死，埋葬；\n下到陰間；第三日從死裡復活；\n升天，坐在全能父上帝的右邊；\n將來必從那裡降臨，審判活人與死人。\n我信聖靈。\n我信聖而公之教會，聖徒相通，\n罪得赦免，\n肉體復活，\n永遠的活。阿們。`,
-            3: `【新的誡命 (台語)】\n「你要盡心、盡性、盡意愛主——你的上帝。這是誡命中的第一，且是最大的。其次也相仿，就是要愛人如己。這兩條誡命是律法和先知一切道理的總綱。」`,
-            4: `【上帝十條誡 (台語漢字完整版)】\n第一，除了我以外，你不可有別的上帝。\n第二，不可為自己雕刻偶像，也不可造什麼形像，彷彿上天、下地，和地底下、水中的百物。不可跪拜那些像，也不可事奉它，因為我耶和華－你的上帝是忌邪的上帝。恨我的，我必追討他的罪，自父及子，直到三四代；愛我、守我誡命的，我必向他們發慈愛，直到千代。\n第三，不可妄稱耶和華－你上帝的名；因為妄稱耶和華名的，耶和華必不以他為無罪。\n第四，當記念安息日，守做聖日。六日內要勞力做你一切的工，但第七日是向耶和華－你的上帝當守的安息日。\n第五，當孝敬你的父母，使你的日子在耶和華－你上帝所賜你的地上得以長久。\n第六，不可殺人。\n第七，不可姦淫。\n第八，不可偷提。\n第九，不可做假見證陷害人。\n第十，不可貪戀人的厝；也不可貪戀人的某、僕婢、牛驢，並他一切所有的。`,
-            5: `【台灣基督長老教會信仰告白 (台語)】\n阮信上帝是唯一真神，創造、主宰宇宙的主。祂是公義、憐憫，賞賜人生命、盼望的上帝。祂藉著耶穌基督受死閣復活，拯救人脫離罪、死、及魔鬼的權勢，使人同得上帝的恩典。\n阮信，耶穌基督是人、也是上帝，祂是人類的救主，也是教會的頭；祂欲閣來，建立永遠的國。\n阮信，聖靈互人有信心、有气力，通做上帝的奴僕，跟隨耶穌基督，見證福音，服事世人。\n阮信，聖經是上帝的話，是信仰及生活的最高準則。\n阮信，教會是上帝百姓的團契，受呼召來宣揚耶穌基督的拯救，做和解的使者，是普世的，復釘根在本地，認同所有的住民，通過愛與受苦，來成做盼望的記號。\n阮信，人藉著上帝的恩典而得救，也因為信來得著稱義，進入上帝的團契，在聖靈裡面享受永遠的活。阿們。`
+            [cite_start]// 第一週：主的祈禱文 (台) [cite: 1]
+            1: `【主的祈禱文 (台)】\n阮在天裡的父，願你的名聖，你的國臨到，你的旨意得成，佇地裡親像佇天裡。\n阮的日食今仔日給阮。赦免阮的辜負，親像阮也有赦免辜負阮的人。\n莫得導阮入佇試，著救阮脫離彼個歹的。\n因為國，權能，榮光攏是你所有，\n代代無盡。阿們。\n（台語漢字本 太6：9-13）`,
+            
+            [cite_start]// 第二週：使徒信經 (台) [cite: 180]
+            2: `【使徒信經 (台)】\n我信上帝，全能的父，創造天、地的主宰。\n我信耶穌基督，上帝的獨生子，咱的主。祂對聖神投胎，對在室女馬利亞出世，佇本丟彼拉多任內受苦，釘十字架，死，埋葬，落陰府，第三日對死人中復活，升天，今坐佇全能父上帝的大旁，祂欲對遐閣來審判活人及死人。\n我信聖神，聖閣公同的教會，聖徒的相通，罪的赦免，肉體的復活，永遠的活命。\n阿們。`,
+            
+            [cite_start]// 第三週：新的誡命 (台) [cite: 364]
+            3: `【新的誡命 (台)】\n你著盡心、盡性、盡意疼主你的上帝。此個誡是大的，亦是頭一個，第二個亦相親像，是講，你著疼厝邊親像自己。此兩條誡是全律法及先知的總根頭。\n(台語漢字本 太22:37-40)\n我用新的誡命互恁，就是恁著相疼，親像我曾疼恁，恁亦著按呢相疼。恁若相疼，眾人欲對按呢知恁是我的學生。\n(台語漢字本 約13:34-35)`,
+            
+            [cite_start]// 第四週：上帝十條誡 (台) [cite: 542]
+            4: `【上帝十條誡 (台)】\n第1誡：我以外，你呣通有別的上帝。\n第2誡：呣通為著家己雕刻偶像，不論天頂、地上，及地下、水內所有的物攏呣通做伊的像。呣通敬拜伊，也呣通服事伊，因為我耶和華--你的上帝，斷斷呣容允用別個上帝匹配我。怨恨我者，我歸咎伊的罪，對父到子，到三四代；疼我、守我誡命者，我施恩互伊，直到千代。\n第3誡：呣通濫糝稱耶和華--你的上帝的名；因為濫糝稱伊的名的人，耶和華的確無掠伊做無罪。\n第4誡：當記得安息日，守伊做聖。六日內應該著磨做你一切的工，獨獨第七日就是向耶和華--你的上帝來守的安息。此日你及你的子、查某子、奴僕、女婢、精牲，以及踮佇你中間的出外人，一切的工攏呣通做；因為六日內，耶和華創造天、地、海，及彼中間萬物，第七日就息，所以耶和華賜福佇安息日，設立伊做聖。\n第5誡：著孝敬你的老父你的老母，互你的日子佇耶和華--你的上帝所賞賜你的地得著久長。\n第6誡：呣通害死人。\n第7誡：呣通行姦淫。\n第8誡：呣通偷提。\n第9誡：呣通做假的干證，陷害你的厝邊。\n第10誡：呣通貪你的厝邊的厝；也呣通貪你的厝邊的某、奴僕、女婢、牛、驢，以及你的厝邊一切所有的。\n(台語漢字本 出20:3-17)`,
+            
+            [cite_start]// 第五週：台灣基督長老教會信仰告白 (台) [cite: 728]
+            5: `【台灣基督長老教會信仰告白 (台)】\n阮信上帝，創造、統治人與萬物的獨一真神。祂是歷史與世界的主，施行審判和拯救。祂的子對聖神投胎，對在室女馬利亞出世做人，做咱的兄弟，就是人類的救主耶穌基督，對祂的受苦、釘十字架死、復活，顯明上帝的仁愛與公義，使咱與上帝復和。祂的神，就是聖神，站在咱中間，賞賜氣力，使阮在萬百姓中做見證，直到主復來。\n\n阮信，聖經是上帝所啟示的，記載祂的救贖，做阮信仰與生活的準則。\n\n阮信，教會是上帝百姓的團契，受召來宣揚耶穌基督的拯救，做和解的使者，是普世的，復釘根在本地，認同所有的住民，通過愛與受苦，來成做盼望的記號。\n\n阮信，人對上帝的恩典來悔改，罪得赦免，用虔誠、仁愛、與獻身的生活歸榮光上帝。\n\n阮信，上帝使人有尊嚴、才能，以及鄉土，來有份於祂的創造，負責任和祂相與管理世界。\n\n對如此，人有社會、政治及經濟的制度，也有文藝、科學，復有追求真神的心。總是人有罪，誤用這些恩賜，破壞人、萬物、與上帝的關係。所以，人著倚靠耶穌基督的救恩。祂要使人對罪惡中得著釋放，使受壓制的得著自由、平等，在基督成做新創造的人，使世界成做祂的國，充滿公義、平安與歡喜。\n阿們`
         },
         ch: {
-            1: `【主禱文 (華語)】\n我們在天上的父，願人都尊祢的名為聖。願祢的國降臨，願祢的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們遇見試探，救我們脫離兇惡。因為國度、權柄、榮耀，全是祢的，直到永遠。阿門。`,
-            2: `【使徒信經 (華語正確版)】\n我信上帝，全能的父，創造天地的主。\n我信耶穌基督，上帝的獨生子，我們的主。\n祂由聖靈感孕，由童貞女馬利亞所生；\n在本丟彼拉多手下受難，被釘於十字架，受死，埋葬；\n降至陰間；第三日從死人中復活；\n升天，坐在全能父上帝的右邊；\n將來必從那裡降臨，審判活人與死人。\n我信聖靈。\n我信聖而公之教會，我信聖徒相通，\n我信罪得赦免，\n我信身體復活，\n我信永生。阿門。`,
-            3: `【新的誡命 (華語)】\n「你要盡心、盡性、盡意愛主——你的上帝。這是誡命中的第一，且是最大的。其次也相仿，就是要愛人如己。這兩條誡命是律法和先知一切道理的總綱。」`,
-            4: `【上帝十條誡 (華語完整版)】\n第一，除了我以外，你不可有別的神。\n第二，不可為自己雕刻偶像，也不可作什麼形像彷彿上天、下地，和地底下、水中的百物。不可跪拜那些像，也不可事奉它，因為我耶和華－你的神是忌邪的神。恨我的，我必追討他的罪，自父及子，直到三四代；愛我、守我誡命的，我必向他們發慈愛，直到千代。\n第三，不可妄稱耶和華你神的名；因為妄稱耶和華名的，耶和華必不以他為無罪。\n第四，當記念安息日，守為聖日。六日要勞碌做你一切的工，但第七日是向耶和華－你的神當守的安息日。\n第五，當孝敬父母，使你的日子在耶和華－你神所賜你的地上得以長久。\n第六，不可殺人。\n第七，不可姦淫。\n第八，不可偷盜。\n第九，不可作假見證陷害人。\n第十，不可貪戀人的房屋；也不可貪戀人的妻子、僕婢、牛驢，並他一切所有的。`,
-            5: `【台灣基督長老教會信仰告白 (華語)】\n我們信上帝是唯一真神，創造、主宰宇宙的主。祂是公義、憐憫，賞賜人生命、盼望的上帝。祂藉著耶穌基督受死復活，拯救人脫離罪、死、及魔鬼的權勢，使人同得上帝的恩典。\n我們信，耶穌基督是人、也是上帝，祂是人類的救主，也是教會的頭；祂必再來，建立永遠的國。\n我們信，聖靈使人有信心、有力量，能做上帝的奴僕，跟隨耶穌基督，見證福音，服事世人。\n我們信，聖經是上帝的話，是信仰及生活的最高準則。\n我們信，教會是上帝百姓的團契，受呼召來宣揚耶穌基督的拯救，做和解的使者，是普世的，復釘根在本地，認同所有的住民，通過愛與受苦，來成為盼望的記號。\n我們信，人藉著上帝的恩典而得救，也因為信來得著稱義，進入上帝的團契，在聖靈裡面享受永遠的生命。阿們。`
+            [cite_start]// 第一週：主的祈禱文 (華) [cite: 92]
+            1: `【主的祈禱文 (華)】\n我們在天上的父：願人都尊祢的名為聖。\n願祢的國度降臨；願祢的旨意行在地上，\n如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們陷入試探；救我們脫離那惡者。因為國度、權柄、榮耀，全是祢的，直到永遠。阿們！\n（和合本修訂版 太6：9-13）`,
+            
+            [cite_start]// 第二週：使徒信經 (華) [cite: 272]
+            2: `【使徒信經 (華)】\n我信上帝，全能的父，創造天地的主。\n\n我信我主耶穌基督，上帝的獨生子。祂從聖靈感孕，由童貞女馬利亞所生，在本丟彼拉多手下受難，被釘於十字架，受死，埋葬，降在陰間，第三天從死人中復活，升天，坐在全能父上帝的右邊，將來必從那裡降臨，審判活人與死人。\n我信聖靈，聖而公的教會，聖徒的相通，罪的赦免，身體的復活，永遠的生命。\n阿們。`,
+            
+            [cite_start]// 第三週：新的誡命 (華) [cite: 453]
+            3: `【新的誡命 (華)】\n你要盡心、盡性、盡意愛主你的上帝。這是誡命中的第一，且是最大的 。其次也相倣，就是要愛人如己。這兩條誡命是律法和先知一切道理的總綱。\n(和合本 太22:37-40)\n我賜給你們一條新命令，乃是叫你們彼此相愛；我怎樣愛你們，你們也要怎樣相愛。你們若有彼此相愛的心，眾人因此就認出你們是我的門徒了。  \n(和合本 約13:34-35)`,
+            
+            [cite_start]// 第四週：十誡 (華) [cite: 635]
+            4: `【十誡 (華)】\n第1誡：除了我以外，你不可有別的神。\n第2誡：不可為自己雕刻偶像，也不可做什麼形像彷彿上天、下地，和地底下、水中的百物。 不可跪拜那些像，也不可事奉他，因為我耶和華─你的神是忌邪的神。恨我的，我必追討他的罪，自父及子，直到三四代； 愛我、守我誡命的，我必向他們發慈愛，直到千代。\n第3誡：不可妄稱耶和華─你神的名；因為妄稱耶和華名的，耶和華必不以他為無罪。\n第4誡：當記念安息日，守為聖日。六日要勞碌做你一切的工，但第七日是向耶和華─你神當守的安息日。這一日你和你的兒女、僕婢、牲畜，並你城裡寄居的客旅，無論何工都不可做； 因為六日之內，耶和華造天、地、海，和其中的萬物，第七日便安息，所以耶和華賜福與安息日，定為聖日。\n第5誡：當孝敬父母，使你的日子在耶和華─你神所賜你的地上得以長久。\n第6誡：不可殺人。\n第7誡：不可姦淫。\n第8誡：不可偷盜。\n第9誡：不可作假見證陷害人。\n第10誡：不可貪戀人的房屋；也不可貪戀人的妻子、僕婢、牛驢，並他一切所有的。\n(和合本 出20:3-17)`,
+            
+            [cite_start]// 第五週：台灣基督長老教會信仰告白 (華) [cite: 823]
+            5: `【台灣基督長老教會信仰告白 (華)】\n我們信上帝，創造、統治人與萬物的獨一真神。祂是歷史與世界的主，施行審判和拯救。祂的兒子，從聖靈投胎，由童貞女馬利亞降生為人，成為我們的弟兄，就是人類的救主耶穌基督，藉著祂的受苦、釘十字架死、復活，彰顯了上帝的仁愛與公義，使我們與上帝復和。祂的靈，就是聖靈，住在我們中間，賜能力，使我們在萬民中做見證，直到主再來。\n\n我們信，聖經是上帝所啟示的，記載祂的救贖，做為我們信仰與生活的準則。\n\n我們信，教會是上帝子民的團契，蒙召來宣揚耶穌基督的拯救，做和解的使者，是普世的，且根植於本地，認同所有的住民，通過愛與受苦，而成為盼望的記號。\n\n我們信，人藉著上帝的恩典而悔改，罪得赦免，以虔誠、仁愛與獻身的生活歸榮耀於上帝。\n\n我們信，上帝賜給人有尊嚴、才能，以及鄉土，使人有份於祂的創造，負責任與祂一起管理世界。\n\n因此，人有社會、政治及經濟的制度，也有文藝、科學，且有追求真神的心。但是人有罪，誤用這些恩賜，破壞人、萬物、與上帝的關係。所以，人當倚靠耶穌基督的救恩。祂要使人從罪惡中得釋放，使受壓制的人得自由、平等，在基督裡成為新創造的人，使世界成為祂的國度，充滿公義、平安與喜樂。\n阿們`
         }
     };
 
     function updateUI() { document.getElementById('hymnGroup').style.display = document.getElementById('serviceType').value === 'tw' ? 'block' : 'none'; }
     function autoWeek() { const d = new Date(document.getElementById('date').value); if(!isNaN(d)) document.getElementById('week').value = Math.ceil(d.getDate()/7) > 5 ? 5 : Math.ceil(d.getDate()/7); }
+    
+    // --- Local Storage: 自動儲存 Key ---
+    function saveKey() {
+        const key = document.getElementById('apiKey').value.trim();
+        if (key) { localStorage.setItem('church_api_key', key); }
+    }
+    
+    window.onload = function() {
+        const savedKey = localStorage.getItem('church_api_key');
+        if (savedKey) { document.getElementById('apiKey').value = savedKey; }
+        document.getElementById('date').valueAsDate = new Date();
+        autoWeek();
+        updateUI();
+    };
 
-    // --- 核心：掃描可用模型 ---
+    // --- 掃描可用模型 (除錯用) ---
     async function scanModels() {
         const apiKey = document.getElementById('apiKey').value.trim();
         const statusDiv = document.getElementById('scanStatus');
         const select = document.getElementById('aiModel');
         
+        if (!apiKey) { alert("請先輸入 API Key"); return; }
+
         statusDiv.style.display = 'block';
         statusDiv.className = 'api-status';
-        statusDiv.innerHTML = '⏳ 正在連線 Google 查詢權限...';
+        statusDiv.innerHTML = '⏳ 正在連線 Google 查詢...';
 
         try {
-            // 使用 listModels API
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
             const data = await response.json();
 
             if (!response.ok) {
                 statusDiv.className = 'api-status status-error';
-                statusDiv.innerHTML = `⚠️ 查詢失敗 (HTTP ${response.status})<br>原因: ${data.error ? data.error.message : '未知'}<br>請檢查 GCP API 是否啟用。`;
+                statusDiv.innerHTML = `⚠️ 查詢失敗 (HTTP ${response.status})<br>訊息: ${data.error ? data.error.message : '您的 Key 可能已被封鎖'}`;
                 return;
             }
 
             if (data.models) {
-                // 過濾出可用的 generateContent 模型
-                const validModels = data.models.filter(m => 
-                    m.supportedGenerationMethods.includes("generateContent")
-                );
-
+                const validModels = data.models.filter(m => m.supportedGenerationMethods.includes("generateContent"));
                 if (validModels.length > 0) {
-                    select.innerHTML = ""; // 清空舊選項
+                    select.innerHTML = "";
                     validModels.forEach(m => {
-                        // 只顯示 gemini 系列
                         if(m.name.includes("gemini")) {
-                            // 移除 models/ 前綴顯示
                             const cleanName = m.name.replace("models/", "");
                             const option = document.createElement("option");
                             option.value = cleanName;
-                            option.text = `✅ ${cleanName} (可用)`;
-                            
-                            // 優先選擇 gemini-1.5-pro
-                            if (cleanName === "gemini-1.5-pro") option.selected = true;
+                            option.text = `✅ ${cleanName}`;
+                            // 預設優先選取 Flash
+                            if (cleanName === "gemini-1.5-flash") option.selected = true;
                             select.appendChild(option);
                         }
                     });
                     statusDiv.className = 'api-status status-ok';
-                    statusDiv.innerHTML = `🎉 成功！偵測到 ${validModels.length} 個可用模型。已更新下方選單。`;
+                    statusDiv.innerHTML = `🎉 成功偵測到 ${validModels.length} 個可用模型！`;
                 } else {
-                    statusDiv.className = 'api-status status-error';
-                    statusDiv.innerHTML = `⚠️ 連線成功，但此 Key 沒有任何可用模型的權限。`;
+                    statusDiv.innerHTML = `⚠️ 連線成功但無可用模型。`;
                 }
             }
         } catch (e) {
             statusDiv.className = 'api-status status-error';
-            statusDiv.innerHTML = `⚠️ 連線錯誤 (請務必部署到 GitHub Pages): ${e.message}`;
+            statusDiv.innerHTML = `⚠️ 連線錯誤: ${e.message}`;
         }
     }
 
     // --- API 呼叫 ---
     async function getAIPrayer(key, type, custom, preacher) {
-        const model = document.getElementById('aiModel').value; // 使用偵測後選擇的模型
+        const model = document.getElementById('aiModel').value; // 使用選單選擇的模型 (預設 Flash)
         const lang = type === 'tw' ? '台語' : '華語';
         const pronoun = type === 'tw' ? '使用「阮」代表我們(排除上帝)，嚴禁使用「咱」' : '使用「我們」';
         const context = type === 'tw' ? '司會帶領的禮拜中段祈禱' : '敬拜團主領的祈禱';
@@ -279,7 +303,7 @@
             
             if (!response.ok) {
                 const errData = await response.json();
-                return `⚠️ API 錯誤 (${response.status}): ${errData.error ? errData.error.message : '未知錯誤'}`;
+                return `<div class="api-error">⚠️ API 錯誤 (${response.status}): ${errData.error ? errData.error.message : '未知錯誤'}</div>`;
             }
 
             const data = await response.json();
@@ -289,15 +313,17 @@
                 if(type === 'tw') text = text.replace(/阮/g, '<span class="ruan">阮</span>');
                 return text;
             } else {
-                return `⚠️ 內容生成為空`;
+                return `<div class="api-error">⚠️ 內容生成為空</div>`;
             }
         } catch (e) {
-            return `⚠️ 連線錯誤: ${e.message}`;
+            return `<div class="api-error">⚠️ 連線錯誤: ${e.message}</div>`;
         }
     }
 
     async function generate() {
         const apiKey = document.getElementById('apiKey').value.trim();
+        if (!apiKey) { alert("請先輸入 API Key！"); return; }
+
         const type = document.getElementById('serviceType').value;
         const date = document.getElementById('date').value;
         const week = document.getElementById('week').value;
@@ -393,7 +419,10 @@
             html += `<div class="item"><span class="title">15. 祝禱/阿們頌/殿樂/平安禮</span>
                 <span class="note">(阿們頌：聖詩 643 首)</span>
                 <span class="content" style="color:blue; margin-top:10px;">${postludeText}</span></div>`;
-        } else {
+        }
+
+        // ================= 華語第二場 =================
+        else {
             html += `<div class="item"><span class="title">1. 宣召</span>
                 <span class="bridge">司會：(直接讀經文)</span></div>`;
 
