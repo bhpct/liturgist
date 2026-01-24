@@ -3,83 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>霧峰教會禮拜司會平台 (GitHub 企業版)</title>
+    <title>霧峰教會禮拜司會平台 (純 AI 直連版)</title>
     <style>
         /* ==================== */
-        /* CSS 樣式區 (A4列印優化) */
+        /* CSS 樣式區 */
         /* ==================== */
         :root {
             --primary: #2c3e50;
-            --accent: #c0392b; /* 長老教會紅 */
-            --stand-bg: #e67e22; /* 站立提示橘 */
+            --accent: #c0392b;
+            --stand-bg: #e67e22;
         }
         body { font-family: "Microsoft JhengHei", "Heiti TC", sans-serif; margin: 0; display: flex; height: 100vh; background: #eee; }
         
-        /* 左側設定欄 */
-        .sidebar {
-            width: 380px;
-            background: var(--primary);
-            color: white;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-sizing: border-box;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        }
-        .control-group {
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        .sidebar { width: 380px; background: var(--primary); color: white; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; box-sizing: border-box; }
+        .control-group { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
         .control-group label { display: block; color: #bdc3c7; margin-bottom: 5px; font-size: 0.95em; }
-        .control-group input, .control-group select, .control-group textarea {
-            width: 100%; padding: 10px; border-radius: 4px; border: none; margin-bottom: 10px;
-            font-size: 1em; box-sizing: border-box; font-family: inherit;
-        }
-        .btn {
-            background: var(--accent); color: white; border: none; padding: 12px;
-            width: 100%; border-radius: 5px; font-size: 1.1em; cursor: pointer; font-weight: bold;
-            transition: 0.2s;
-        }
+        .control-group input, .control-group select, .control-group textarea { width: 100%; padding: 10px; border-radius: 4px; border: none; margin-bottom: 10px; font-size: 1em; box-sizing: border-box; }
+        .btn { background: var(--accent); color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-size: 1.1em; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .btn:hover { background: #a93226; }
         .btn-sec { background: #555; margin-top: 5px; }
 
-        /* 右側預覽區 */
-        .preview { flex: 1; padding: 40px; overflow-y: auto; background: white; position: relative; }
+        .preview { flex: 1; padding: 40px; overflow-y: auto; background: white; }
         .script-box { max-width: 210mm; margin: auto; font-size: 18px; line-height: 1.6; padding-bottom: 50px; }
         
-        /* 腳本元素樣式 */
         .header { text-align: center; border-bottom: 3px double #333; padding-bottom: 20px; margin-bottom: 30px; }
         .item { margin-bottom: 35px; break-inside: avoid; }
         .title { font-weight: bold; font-size: 1.25em; color: var(--primary); border-bottom: 2px solid #ddd; display: block; margin-bottom: 12px; padding-bottom: 5px; }
         .bridge { background: #f8f9fa; padding: 10px 15px; border-left: 6px solid #999; display: block; margin-bottom: 12px; color: #444; font-style: italic; }
         .content { white-space: pre-wrap; display: block; color: #000; padding-left: 10px; border-left: 1px solid #eee; margin-left: 5px; }
         .note { font-size: 0.9em; color: #666; border: 1px dashed #bbb; padding: 10px; background: #fffdf0; margin-top: 8px; }
-        
-        /* 標記 */
         .stand { background: var(--stand-bg); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; margin-right: 8px; vertical-align: middle; }
         .ruan { color: #c0392b; font-weight: bold; text-decoration: underline; }
 
-        /* SOP 視窗 */
-        .sop-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow-y: auto; }
-        .sop-content { background: white; max-width: 800px; margin: 50px auto; padding: 40px; border-radius: 10px; }
-        .sop-close { float: right; font-size: 2rem; cursor: pointer; color: #888; }
-        .sop-content h3 { border-left: 5px solid var(--accent); padding-left: 15px; margin-top: 30px; color: var(--primary); }
+        /* API 錯誤顯示區 */
+        .api-error { color: red; border: 2px solid red; background: #ffe6e6; padding: 15px; font-weight: bold; white-space: pre-wrap; margin-top: 10px; }
 
-        /* --- 列印模式專用 (強制 A4 排版) --- */
         @media print {
-            .sidebar, .sop-modal, .btn, .control-group { display: none !important; }
+            .sidebar, .btn, .control-group { display: none !important; }
             body, html { background: white; margin: 0; padding: 0; height: auto; width: 100%; overflow: visible; }
-            .preview { display: block; width: 100%; margin: 0; padding: 0; position: static; overflow: visible; }
-            .script-box { max-width: 100%; width: 100%; margin: 0; padding: 20px; font-size: 14pt; line-height: 1.5; }
-            .ruan { color: black; font-weight: bold; text-decoration: none; border-bottom: 1px dotted black; }
-            .stand { color: black; border: 1px solid black; background: white; font-weight: bold; }
-            .title { color: black; border-bottom: 1px solid black; }
-            .bridge { background: white; border-left: 3px solid #ccc; color: #000; font-style: normal; font-weight: bold; }
-            .header { border-bottom: 1px solid black; }
+            .preview { display: block; width: 100%; margin: 0; padding: 0; }
+            .script-box { max-width: 100%; width: 100%; margin: 0; padding: 20px; font-size: 14pt; }
+            .ruan { color: black; text-decoration: none; border-bottom: 1px dotted black; }
+            .stand { color: black; border: 1px solid black; background: white; }
             .item { page-break-inside: avoid; }
         }
     </style>
@@ -87,11 +52,11 @@
 <body>
 
 <div class="sidebar">
-    <h2>⛪ 禮拜設定面板</h2>
+    <h2>⛪ 禮拜設定 (純 AI 直連版)</h2>
     
     <div class="control-group">
         <label>API Key (企業版)</label>
-        <input type="password" id="apiKey" value="AIzaSyC3H1-q4088uq2_94Np6bHeleNKwfn7g0k" readonly style="background:#555; color:#ccc; cursor:not-allowed;">
+        <input type="password" id="apiKey" value="AIzaSyC3H1-q4088uq2_94Np6bHeleNKwfn7g0k" readonly style="background:#555; color:#ccc;">
         
         <label>場次</label>
         <select id="serviceType" onchange="updateUI()">
@@ -99,7 +64,7 @@
             <option value="ch">第二場：華語 (11:00)</option>
         </select>
 
-        <label>日期 (自動週次)</label>
+        <label>日期</label>
         <input type="date" id="date" onchange="autoWeek()">
         <select id="week">
             <option value="1">第一週 (主禱文)</option>
@@ -115,41 +80,30 @@
         <input type="text" id="preacher" value="宋承祐 牧師">
         <label>信息主題</label>
         <input type="text" id="topic" placeholder="例如：為[光]作見證">
-        <label>經文範圍</label>
+        <label>經文</label>
         <input type="text" id="scripture" placeholder="例如：約翰福音 1:6-18">
     </div>
 
     <div class="control-group" id="hymnGroup">
-        <label>聖詩 (第一首)</label>
-        <input type="text" id="hymn1" placeholder="例如：43">
-        
-        <label>讚美 (獻詩團體)</label>
-        <input type="text" id="praiseTeam" value="聖歌隊" placeholder="例如：婦女團契">
-        
-        <label>回應詩 (第二首)</label>
-        <input type="text" id="hymn2" placeholder="例如：605">
-        
-        <label>差遣/頌榮 (第三首)</label>
-        <div style="display:flex; gap:10px; margin-bottom:5px;">
-            <label><input type="radio" name="endType" value="sending" checked> 差遣</label>
-            <label><input type="radio" name="endType" value="doxology"> 頌榮</label>
-        </div>
-        <input type="text" id="hymn3" placeholder="例如：402">
+        <label>聖詩</label> <input type="text" id="hymn1" placeholder="43">
+        <label>讚美</label> <input type="text" id="praiseTeam" value="聖歌隊">
+        <label>回應詩</label> <input type="text" id="hymn2" placeholder="605">
+        <label>差遣/頌榮</label>
+        <div style="display:flex; gap:10px;"><label><input type="radio" name="endType" value="sending" checked> 差遣</label><label><input type="radio" name="endType" value="doxology"> 頌榮</label></div>
+        <input type="text" id="hymn3" placeholder="402">
     </div>
 
     <div class="control-group">
-        <label>啟應文篇數</label>
-        <input type="text" id="respNo" placeholder="例如：13">
+        <label>啟應文</label> <input type="text" id="respNo" placeholder="13">
     </div>
 
     <div class="control-group">
         <label style="color:#ffcc00;">🙏 祈禱代禱重點 (API)</label>
-        <p style="font-size:0.8em; color:#ccc; margin-top:0;">將用於前段「祈禱」環節。請輸入：</p>
+        <p style="font-size:0.8em; color:#ccc; margin-top:0;">輸入內容將直接傳送給 AI，若失敗將顯示錯誤代碼。</p>
         <textarea id="customPrayer" rows="4" placeholder="例如：為王長老手術平安、為國家大選和平..."></textarea>
     </div>
 
     <button class="btn" onclick="generate()">⚡ 產生司會腳本</button>
-    <button class="btn btn-sec" onclick="toggleSOP()">📖 查看服事 SOP</button>
     <button class="btn btn-sec" onclick="window.print()">🖨️ 列印 / 下載 PDF</button>
 </div>
 
@@ -161,28 +115,7 @@
     </div>
 </div>
 
-<div id="sopModal" class="sop-modal">
-    <div class="sop-content">
-        <span class="sop-close" onclick="toggleSOP()">&times;</span>
-        <h2 style="color:var(--primary); border-bottom: 2px solid var(--accent);">服事 SOP (資料來源：門徒課程)</h2>
-        <h3>司會 (Moderator)</h3>
-        <ul>
-            <li><strong>宣召：</strong> 直接讀經文，<span style="color:red">不可說「宣召」二字</span>。</li>
-            <li><strong>聖詩：</strong> 宣佈兩次，看會眾翻到才開始。</li>
-            <li><strong>語言：</strong> 台語場次禱告時請注意「阮」(排除上帝) 與「咱」(包含上帝) 的用法。</li>
-            <li><strong>突發：</strong> 若遇中斷，帶領禱告並吟詩 159 首。</li>
-        </ul>
-        <h3>招待 (Usher)</h3>
-        <ul>
-            <li>禮拜開始後關閉中間大門。</li>
-            <li>引導會友盡量往前坐。</li>
-            <li>奉獻動線：司獻者後方集合 -> 台前 -> 左側第一排開始 -> 結束回後方。</li>
-        </ul>
-    </div>
-</div>
-
 <script>
-    // --- 經文資料庫：完全補齊省略號，符合 PCT 標準 ---
     const texts = {
         tw: {
             1: `【主的祈禱文 (台語)】\n阮在天上的父，願祢的名聖，祢的國臨到，祢的旨意得成在地上，親像在天上。阮日用的飲食，今仔日賜給阮。赦免阮的罪，親像阮亦有赦免得罪阮的人。不求引導阮入於試探，拯救阮脫離那邪惡者。因為國、權能、榮光，攏是祢所有的，代代無盡。阿們。`,
@@ -195,45 +128,15 @@
             1: `【主禱文 (華語)】\n我們在天上的父，願人都尊祢的名為聖。願祢的國降臨，願祢的旨意行在地上，如同行在天上。我們日用的飲食，今日賜給我們。免我們的債，如同我們免了人的債。不叫我們遇見試探，救我們脫離兇惡。因為國度、權柄、榮耀，全是祢的，直到永遠。阿門。`,
             2: `【使徒信經 (華語正確版)】\n我信上帝，全能的父，創造天地的主。\n我信耶穌基督，上帝的獨生子，我們的主。\n祂由聖靈感孕，由童貞女馬利亞所生；\n在本丟彼拉多手下受難，被釘於十字架，受死，埋葬；\n降至陰間；第三日從死人中復活；\n升天，坐在全能父上帝的右邊；\n將來必從那裡降臨，審判活人與死人。\n我信聖靈。\n我信聖而公之教會，我信聖徒相通，\n我信罪得赦免，\n我信身體復活，\n我信永生。阿門。`,
             3: `【新的誡命 (華語)】\n「你要盡心、盡性、盡意愛主——你的上帝。這是誡命中的第一，且是最大的。其次也相仿，就是要愛人如己。這兩條誡命是律法和先知一切道理的總綱。」`,
-            4: `【上帝十條誡 (華語完整版)】\n第一，除了我以外，你不可有別的神。\n第二，不可為自己雕刻偶像，也不可作什麼形像彷彿上天、下地，和地底下、水中的百物。不可跪拜那些像，也不可事奉它，因為我耶和華－你的神是忌邪的神。恨我的，我必追討他的罪，自父及子，直到三四代；愛我、守我誡命的，我必向他們發慈愛，直到千代。\n第三，不可妄稱耶和華你神的名；因為妄稱耶和華名的，耶和華必不以他為無罪。\n第四，當記念安息日，守為聖日。六日要勞碌做你一切的工，但第七日是向耶和華－你的神當守的安息日。\n第五，當孝敬父母，使你的日子在耶和華－你神所賜你的地上得以長久。\n第六，不可殺人。\n第七，不可姦淫。\n第八，不可偷盜。\n第九，不可作假見證陷害人。\n第十，不可貪戀人的房屋；也不可貪戀人的妻子、僕婢、牛驢，並他一切所有的。`,
-            5: `【台灣基督長老教會信仰告白 (華語)】\n我們信上帝是唯一真神，創造、主宰宇宙的主。祂是公義、憐憫，賞賜人生命、盼望的上帝。祂藉著耶穌基督受死復活，拯救人脫離罪、死、及魔鬼的權勢，使人同得上帝的恩典。我們信，耶穌基督是人、也是上帝，祂是人類的救主，也是教會的頭；祂必再來，建立永遠的國。我們信，聖靈使人有信心、有力量，能做上帝的奴僕，跟隨耶穌基督，見證福音，服事世人。我們信，聖經是上帝的話，是信仰及生活的最高準則。我們信，教會是上帝百姓的團契，受呼召來宣揚耶穌基督的拯救，做和解的使者，是普世的，復釘根在本地，認同所有的住民，通過愛與受苦，來成為盼望的記號。我們信，人藉著上帝的恩典而得救，也因為信來得著稱義，進入上帝的團契，在聖靈裡面享受永遠的生命。阿們。`
+            4: `【上帝十條誡 (華語完整版)】\n第一，除了我以外，你不可有別的神。\n第二，不可為自己雕刻偶像...不可跪拜那些像...愛我、守我誡命的，我必向他們發慈愛，直到千代。\n第三，不可妄稱耶和華你神的名...\n第四，當記念安息日，守為聖日...\n第五，當孝敬父母...\n第六，不可殺人。\n第七，不可姦淫。\n第八，不可偷盜。\n第九，不可作假見證陷害人。\n第十，不可貪戀人的房屋...並他一切所有的。`,
+            5: `【台灣基督長老教會信仰告白 (華語)】\n我們信上帝是唯一真神，創造、主宰宇宙的主... 我們信，耶穌基督是人、也是上帝... 我們信，聖靈使人有信心... 我們信，聖經是上帝的話... 我們信，教會是上帝百姓的團契... 我們信，人藉著上帝的恩典而得救... 阿們。`
         }
     };
 
-    function updateUI() {
-        const type = document.getElementById('serviceType').value;
-        document.getElementById('hymnGroup').style.display = (type === 'tw') ? 'block' : 'none';
-    }
+    function updateUI() { document.getElementById('hymnGroup').style.display = document.getElementById('serviceType').value === 'tw' ? 'block' : 'none'; }
+    function autoWeek() { const d = new Date(document.getElementById('date').value); if(!isNaN(d)) document.getElementById('week').value = Math.ceil(d.getDate()/7) > 5 ? 5 : Math.ceil(d.getDate()/7); }
 
-    function autoWeek() {
-        const d = new Date(document.getElementById('date').value);
-        if(!isNaN(d)) {
-            const week = Math.ceil(d.getDate() / 7);
-            document.getElementById('week').value = week > 5 ? 5 : week;
-        }
-    }
-
-    function toggleSOP() {
-        const modal = document.getElementById('sopModal');
-        modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
-    }
-
-    // --- 內建離線引擎 (保險機制) ---
-    function generateOfflinePrayer(type, custom, preacher) {
-        const term = type === 'tw' ? '<span class="ruan">阮</span>' : '我們';
-        const god = type === 'tw' ? '父上帝' : '天父';
-        const customText = custom.trim() ? `特別${term}要將心中的掛慮交託：**${custom}**。求主垂聽${term}的呼求。` : `${term}將心內未講出的願望，攏交託在祢的面前。`;
-
-        let p = `(系統自動切換至離線模式產生)\n`;
-        p += `親愛的${god}，${term}感謝祢，招聚${term}來到聖殿。求聖靈運行在${term}中間，讓每位弟兄姊妹今日都能與主相遇。\n\n`;
-        p += `主啊，${term}為著**國家**禱告，求祢賜下公義與和平。${term}也將**霧峰教會**交在祢手中，願教會合一宣教。${term}也祈求祢保守每一個**家庭**，賜下平安。\n\n`;
-        p += `${customText}\n\n`;
-        p += `最後，${term}為著 **${preacher}** 禱告，求主膏抹祂的口，讓話語成為生命的靈糧，也賜福牧師全家。\n`;
-        p += `奉主耶穌的名求，阿們。`;
-        return p;
-    }
-
-    // --- API 呼叫 (預設使用 Flash，部署到 GitHub Pages 後應可正常連線) ---
+    // --- 純 API 直連 (無備援，失敗直接報錯) ---
     async function getAIPrayer(key, type, custom, preacher) {
         const lang = type === 'tw' ? '台語' : '華語';
         const pronoun = type === 'tw' ? '使用「阮」代表我們(排除上帝)，嚴禁使用「咱」' : '使用「我們」';
@@ -259,8 +162,10 @@
             });
             
             if (!response.ok) {
-                console.warn(`API Error: ${response.status}. Switching to offline mode.`);
-                return generateOfflinePrayer(type, custom, preacher);
+                // 直接回傳錯誤代碼，不切換離線模式
+                const errData = await response.json();
+                const errMsg = errData.error ? errData.error.message : response.statusText;
+                return `<div class="api-error">⚠️ API 生成失敗！\nHTTP 狀態碼: ${response.status}\n錯誤訊息: ${errMsg}\n(請檢查 API Key 權限、額度或機構政策設定)</div>`;
             }
 
             const data = await response.json();
@@ -270,11 +175,11 @@
                 if(type === 'tw') text = text.replace(/阮/g, '<span class="ruan">阮</span>');
                 return text;
             } else {
-                return generateOfflinePrayer(type, custom, preacher);
+                return `<div class="api-error">⚠️ API 回傳成功但內容為空 (No content)。</div>`;
             }
         } catch (e) {
             console.error("Connection failed:", e);
-            return generateOfflinePrayer(type, custom, preacher);
+            return `<div class="api-error">⚠️ 連線失敗 (Network Error)\n錯誤原因: ${e.message}\n(若是本機執行，可能是 CORS 阻擋，請部署至 GitHub Pages 測試)</div>`;
         }
     }
 
@@ -307,7 +212,9 @@
             else weekBridge = `請我們依然站立，讓我們齊聲朗讀...`;
         }
 
-        document.getElementById('output').innerHTML = "<h3 style='text-align:center;'>⏳ 正在為您撰寫禱告文 (API)...</h3>";
+        document.getElementById('output').innerHTML = "<h3 style='text-align:center;'>⏳ 正在呼叫 Google API 產生禱告文...</h3>";
+        
+        // 等待 API 回傳真實結果
         const aiPrayerText = await getAIPrayer(apiKey, type, customPrayer, preacher);
 
         let html = `<div class="header">
@@ -316,7 +223,6 @@
             <p>主禮：${preacher} | 講題：${topic}</p>
         </div>`;
 
-        // ================= 台語第一場 =================
         if (type === 'tw') {
             const h1 = document.getElementById('hymn1').value;
             const h2 = document.getElementById('hymn2').value;
