@@ -22,7 +22,7 @@
             display: flex;
             background-color: #fff;
             color: var(--text-color);
-            line-height: 1.6;
+            line-height: 1.7; /* 增加行高提升閱讀感 */
         }
 
         /* --- 側邊導覽列 --- */
@@ -68,27 +68,17 @@
 
         .nav-links li a:hover, .nav-links li a.active {
             background: var(--accent);
-            padding-left: 25px; /* 滑動效果 */
+            padding-left: 25px;
         }
 
         .nav-links li a i { margin-right: 10px; width: 20px; text-align: center; }
 
         /* 工具連結區 */
-        .tools-section {
-            padding: 20px;
-            background: rgba(0,0,0,0.3);
-        }
+        .tools-section { padding: 20px; background: rgba(0,0,0,0.3); }
         .tool-btn {
-            display: block;
-            background: #27ae60;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            border-radius: 5px;
-            text-decoration: none;
-            margin-bottom: 10px;
-            font-weight: bold;
-            transition: 0.2s;
+            display: block; background: #27ae60; color: white; text-align: center;
+            padding: 10px; border-radius: 5px; text-decoration: none;
+            margin-bottom: 10px; font-weight: bold; transition: 0.2s;
         }
         .tool-btn:hover { background: #219150; transform: translateY(-2px); }
         .tool-btn.musician { background: #e67e22; }
@@ -99,94 +89,95 @@
             margin-left: var(--sidebar-width);
             flex: 1;
             padding: 40px;
-            max-width: 1000px; /* 閱讀舒適寬度 */
+            max-width: 1000px;
         }
 
         /* 手機版漢堡按鈕 */
         .menu-toggle {
             display: none;
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 1100;
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: fixed; top: 15px; right: 15px; z-index: 1100;
+            background: var(--accent); color: white; border: none;
+            padding: 10px 15px; border-radius: 5px; cursor: pointer;
+            font-size: 1.2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         /* 內容樣式 */
         section {
             margin-bottom: 60px;
-            scroll-margin-top: 20px; /* 錨點定位偏移 */
+            scroll-margin-top: 20px;
             border-bottom: 1px solid #eee;
             padding-bottom: 40px;
         }
 
-        h1 { color: var(--primary); border-left: 5px solid var(--accent); padding-left: 15px; }
-        h2 { color: var(--accent); margin-top: 30px; display: flex; align-items: center; }
+        h1 { color: var(--primary); border-left: 8px solid var(--accent); padding-left: 20px; margin-bottom: 30px; }
+        h2 { color: var(--accent); margin-top: 40px; display: flex; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         h2 i { margin-right: 10px; }
-        h3 { color: #555; border-bottom: 1px dashed #ccc; padding-bottom: 5px; margin-top: 25px; }
-
-        ul { padding-left: 20px; }
-        li { margin-bottom: 8px; }
+        h3 { color: #2c3e50; margin-top: 30px; font-weight: bold; background: #f0f0f0; padding: 8px 12px; border-radius: 4px; display: inline-block; }
+        
+        ul, ol { padding-left: 25px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; }
+        strong { color: #000; }
 
         /* 提示框 */
         .note-box {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
+            background: #fff3cd; border-left: 5px solid #ffc107;
+            padding: 20px; margin: 20px 0; border-radius: 0 5px 5px 0;
+        }
+        .quote-box {
+            font-style: italic; color: #555; background: #f9f9f9;
+            padding: 15px; border-left: 4px solid #999; margin: 10px 0;
         }
 
-        /* 圖片容器 (示意圖) */
-        .img-placeholder {
-            width: 100%;
-            height: 200px;
-            background: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #aaa;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 2px dashed #ddd;
+        /* Q&A 折疊選單 */
+        details {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
         }
-        .img-placeholder::after { content: "在此插入相關圖片 (如：聖餐器具擺設、音控台)"; }
+        details[open] { border-color: var(--accent); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        summary {
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+        summary:hover { background-color: #f1f1f1; }
+        summary::after { content: '\f078'; font-family: "Font Awesome 5 Free"; font-weight: 900; transition: transform 0.3s; }
+        details[open] summary::after { transform: rotate(180deg); }
+        .qa-content { padding: 15px 20px; color: #444; background: #fff; border-top: 1px solid #eee; }
+
+        /* 圖片容器 */
+        .img-placeholder {
+            width: 100%; height: 200px; background: #eee;
+            display: flex; align-items: center; justify-content: center;
+            color: #aaa; border-radius: 8px; margin: 20px 0;
+            border: 2px dashed #ddd; font-weight: bold;
+        }
 
         /* 緊急應變區塊 */
-        .emergency-block {
-            background: #fff5f5;
-            border: 2px solid #ffcccc;
-            border-radius: 10px;
-            padding: 20px;
+        .emergency-header {
+            background: #c0392b; color: white; padding: 20px;
+            border-radius: 8px 8px 0 0; margin-bottom: 0;
         }
-        .emergency-block h3 { color: #c0392b; border-bottom: none; }
+        .emergency-body {
+            border: 2px solid #c0392b; border-top: none;
+            padding: 20px; border-radius: 0 0 8px 8px;
+            background: #fff5f5;
+        }
 
         /* --- RWD 手機版設定 --- */
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%); /* 預設隱藏 */
-                width: 260px;
-            }
+            .sidebar { transform: translateX(-100%); width: 260px; }
             .sidebar.active { transform: translateX(0); }
-            
             .main-content { margin-left: 0; padding: 20px; padding-top: 60px; }
-            
             .menu-toggle { display: block; }
-            
-            /* 遮罩 */
-            .overlay {
-                display: none;
-                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(0,0,0,0.5);
-                z-index: 999;
-            }
+            .overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
             .overlay.active { display: block; }
         }
     </style>
@@ -194,10 +185,7 @@
 <body>
 
     <div class="overlay" onclick="toggleMenu()"></div>
-
-    <button class="menu-toggle" onclick="toggleMenu()">
-        <i class="fas fa-bars"></i>
-    </button>
+    <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
 
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -216,12 +204,12 @@
 
         <ul class="nav-links">
             <li><a href="#intro" onclick="closeMenu()"><i class="fas fa-home"></i> 前言與素養</a></li>
-            <li><a href="#liturgist" onclick="closeMenu()"><i class="fas fa-microphone-alt"></i> 司會職責與細則</a></li>
-            <li><a href="#emergency" onclick="closeMenu()"><i class="fas fa-exclamation-triangle"></i> 突發狀況應變</a></li>
+            <li><a href="#liturgist" onclick="closeMenu()"><i class="fas fa-microphone-alt"></i> 司會準備與執行</a></li>
+            <li><a href="#flow" onclick="closeMenu()"><i class="fas fa-list-ol"></i> 禮拜流程細節</a></li>
+            <li><a href="#emergency" onclick="closeMenu()"><i class="fas fa-exclamation-triangle"></i> 突發狀況 Q&A</a></li>
             <li><a href="#sacrament" onclick="closeMenu()"><i class="fas fa-wine-glass-alt"></i> 聖禮典服事</a></li>
             <li><a href="#reception" onclick="closeMenu()"><i class="fas fa-users"></i> 聚會招待</a></li>
-            <li><a href="#music" onclick="closeMenu()"><i class="fas fa-music"></i> 詩班與司琴</a></li>
-            <li><a href="#media" onclick="closeMenu()"><i class="fas fa-laptop"></i> 投影片與音控</a></li>
+            <li><a href="#music" onclick="closeMenu()"><i class="fas fa-music"></i> 音樂與影音</a></li>
         </ul>
     </nav>
 
@@ -231,70 +219,154 @@
             <h1>禮拜服事人員說明手冊</h1>
             <div class="note-box">
                 <i class="fas fa-quote-left"></i> 
-                你們要歸我作祭司的國度，為聖潔的國民。這些話你要告訴以色列人。<br>
-                (出埃及記 19：6)
+                你們要歸我作祭司的國度，為聖潔的國民。這些話你要告訴以色列人。 (出埃及記 19：6)
             </div>
             
             <h2><i class="fas fa-user-check"></i> 司會者的基本素養</h2>
+            [cite_start]<p>司會之目的是領導會眾，以謙卑恭敬之態度，用心靈、誠實、有秩序的來親近上帝。 [cite: 937]</p>
             <ul>
-                <li><strong>資格：</strong> 以長執為優先，或經訓練之會友。</li>
-                <li><strong>態度：</strong> 瞭解教會禮儀，口齒清晰，有美好生活見證，並有受教的心。</li>
-                <li><strong>服裝：</strong>
+                [cite_start]<li><strong>資格：</strong> 優先由長執服事，或經訓練之會友。 [cite: 927]</li>
+                [cite_start]<li><strong>態度：</strong> 口齒清楚、生活有好見證、態度平穩莊重，避免消極負面話語。 [cite: 929-930, 944-945]</li>
+                [cite_start]<li><strong>服裝儀容：</strong> [cite: 941-943]
                     <ul>
-                        <li>男：深色長褲、素色襯衫 (視季節加西裝外套)、皮鞋、打領帶。</li>
-                        <li>女：穿著端莊正式服裝。</li>
+                        <li><strong>男性：</strong> 深色長褲、素色襯衫（冬季加西裝外套）、皮鞋、打領帶。</li>
+                        <li><strong>女性：</strong> 穿著端莊正式服裝。</li>
                     </ul>
                 </li>
             </ul>
         </section>
 
         <section id="liturgist">
-            <h2><i class="fas fa-microphone-alt"></i> 司會者執行細則</h2>
+            <h2><i class="fas fa-clipboard-check"></i> 司會準備與執行</h2>
             
-            <h3>前置準備 (週六)</h3>
+            <h3>前置作業 (週六)</h3>
             <ul>
-                <li><strong>熟讀聖經：</strong> 至少讀 5 次至通順，遇難字請教牧者。</li>
-                <li><strong>演練流程：</strong> 依週報內容在家演練，早睡養足精神。</li>
+                [cite_start]<li><strong>熟讀聖經：</strong> 至少讀 5 次至通順，遇難字請向牧者請益。 [cite: 938]</li>
+                [cite_start]<li><strong>演練流程：</strong> 依週報內容在家演練，早睡養足精神。 [cite: 939-940]</li>
+                [cite_start]<li><strong>虛心學習：</strong> 隨時請教牧長或屬靈長輩。 [cite: 946]</li>
             </ul>
 
             <h3>禮拜當日 (週日)</h3>
             <ul>
-                <li><strong>提早 30 分鐘抵達：</strong> 測試麥克風、確認服事人員 (講員、司琴、音控) 是否到齊。</li>
-                <li><strong>禮拜前 5 分鐘：</strong> 參加牧師帶領的服事者禱告會。</li>
+                [cite_start]<li><strong>提早 30 分鐘抵達：</strong> 確認週報內容、測試麥克風音量、確認服事人員 (講員、司獻、音控) 是否到齊。 [cite: 948-950]</li>
+                [cite_start]<li><strong>禮拜前 5 分鐘：</strong> 參加牧師帶領的服事者禱告會，並準備開始練習詩歌。 [cite: 948]</li>
+                [cite_start]<li><strong>講員接待：</strong> 若有外來講員，主動詢問需求並簡述流程。 [cite: 951]</li>
+            </ul>
+        </section>
+
+        <section id="flow">
+            <h2><i class="fas fa-list-ol"></i> 禮拜流程細節與話術</h2>
+            
+            <h3>1. 宣召</h3>
+            [cite_start]<p>直接讀出選用的經節，<strong>不必說「宣召」二字</strong>。 [cite: 961]</p>
+
+            <h3>2. 聖詩</h3>
+            [cite_start]<p>宣布頁數至少兩次，確認會眾翻到再開始。 [cite: 964]<br>
+            [cite_start]<strong>話術：</strong>「相與來吟詩，【讚美/回應】上帝，聖詩○○首... 請起立吟【全首/節數】。」 [cite: 965]</p>
+
+            <h3>3. 橋接句 (重要)</h3>
+            <ul>
+                [cite_start]<li><strong>主禱文：</strong>「咱用主所教示的祈禱文來祈禱。」 [cite: 968]</li>
+                [cite_start]<li><strong>信仰告白/使徒信經：</strong>「咱用○○信經來告白咱的信仰。」 [cite: 969]</li>
+                [cite_start]<li><strong>十誡/新誡命：</strong>「作伙讀○○，來提醒自己、彼此勸勉。」 [cite: 970]</li>
             </ul>
 
-            <h3>禮拜中注意事項</h3>
+            <h3>4. 啟應文</h3>
+            [cite_start]<p>確認會眾翻到後，說：「我來讀，請您來應」或「請會眾先讀頭一行」。 [cite: 972] <br>
+            [cite_start]<span style="color:#c0392b;">※ 注意：啟應文中常有難字，務必預習。 [cite: 973]</span></p>
+
+            <h3>5. 禱告</h3>
+            [cite_start]<p>可預先寫下禱告詞，切勿長篇大論。內容包含認罪、感謝、代禱。台語禱告時請注意「阮」(對神) 與「咱」(對人) 的差別。 [cite: 975-978]</p>
+
+            <h3>6. 聖經</h3>
+            <p>讀畢後說：「願上帝賜福聽從並遵行祂的話去行的人」或「<strong>求主將祂的話，刻在我們（咱）的心</strong>」。<br>
+            [cite_start]<span style="color:#c0392b;">❌ 禁止說：「願上帝祝福祂的話語」。 [cite: 981]</span></p>
+
+            <h3>7. 奉獻與報告</h3>
+            [cite_start]<p>司獻者由後方走到台前，全體唱奉獻詩 380 首。報告宜簡明扼要。 [cite: 986-987]<br>
+            [cite_start]<span style="background:#eee; padding:2px;">註：政治人物介紹需待禮拜後交通時間，不宜在禮拜中請其講話。 [cite: 988]</span></p>
+
+            <h3>8. 第二場禮拜 (華語) 特別注意</h3>
             <ul>
-                <li><strong>宣召：</strong> 直接讀經文，<span style="color:red">不說「宣召」二字</span>。</li>
-                <li><strong>聖詩：</strong> 宣布頁數後，<span style="background:#ffffcc">務必停頓觀察</span>，確認會眾翻到後再開始。</li>
-                <li><strong>啟應文：</strong> 需預習難字。宣布頁數後確認會眾翻到，再說「我來讀，請您來應」。</li>
-                <li><strong>讀經：</strong> 讀畢後說「願上帝賜福聽從並遵行祂的話去行的人」或「求主將祂的話，刻在我們的心」。<br>
-                    <span style="color:red">❌ 不要說：「願上帝祝福祂的話語」。</span>
-                </li>
-                <li><strong>介紹講員：</strong> 簡單清楚，不宜客套奉承。</li>
-                <li><strong>第二場注意：</strong> 禱告由敬拜團主領帶領；敬拜讚美即禮拜開始，勿再宣佈「禮拜開始」。</li>
+                [cite_start]<li>禱告、奉獻禱告由<strong>敬拜團主領</strong>帶領。 [cite: 999]</li>
+                [cite_start]<li>敬拜讚美後<strong>不要說</strong>「現在禮拜要開始」，因為禮拜早就開始了。 [cite: 1000]</li>
             </ul>
-            
-            <div class="img-placeholder" style="height:150px;">(示意圖：司會站在講台的視角與麥克風距離)</div>
         </section>
 
         <section id="emergency">
-            <div class="emergency-block">
-                <h2><i class="fas fa-exclamation-circle"></i> 突發狀況應變 SOP</h2>
-                <p>遇到停電、地震、設備故障、有人抗議或身體不適時：</p>
-                
-                <h3>處理流程</h3>
-                <ol>
-                    <li><strong>司會判斷：</strong> 保持鎮定，判斷是否暫停。</li>
-                    <li><strong>禱告：</strong> 帶領會眾禱告，安定人心。</li>
-                    <li><strong>引導：</strong> 現場長執協助處理 (如攙扶病患、排除干擾)。</li>
-                    <li><strong>恢復心境：</strong> 若情況排除，可帶領會眾唱詩歌。</li>
-                </ol>
+            <div class="emergency-header">
+                <h2 style="color:white; margin:0; border:none;"><i class="fas fa-exclamation-circle"></i> 突發狀況應變 Q&A</h2>
+            </div>
+            <div class="emergency-body">
+                [cite_start]<p>遇到異常狀況時，司會者需保持鎮定，判斷是否暫停禮拜。若有需要，請長執協助引導。 [cite: 1016-1019]</p>
 
-                <div class="note-box" style="background:white; border:2px solid var(--accent);">
-                    <strong>🎵 應變專用詩歌：新聖詩 159 首</strong><br>
-                    「主惦我心內，無驚惶自在。」<br>
-                    記憶口訣：159 (祂有救)
+                <details>
+                    <summary>Q1：選舉期間，候選人要求上台拉票？</summary>
+                    <div class="qa-content">
+                        [cite_start]<strong>處理方式：</strong> 不宜在禮拜中請其講話。須待禮拜結束後的「交通時間」，以介紹首次參加禮拜者的方式簡單介紹即可。 [cite: 988, 1003]
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Q2：有人舉牌抗議、鬧場或喝醉酒？</summary>
+                    <div class="qa-content">
+                        [cite_start]<strong>處理方式：</strong> 司會者保持鎮定，請現場招待或長執前往關切並將其引導至堂外溝通，避免影響禮拜進行。 [cite: 1004]
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Q3：會眾當場反駁牧師講道，甚至上台抗議？</summary>
+                    <div class="qa-content">
+                        [cite_start]<strong>處理方式：</strong> 招待長執應立即上前攔阻並安撫，司會可帶領會眾唱詩歌或禱告轉移焦點，緩和氣氛。 [cite: 1005]
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Q4：設備故障 (麥克風沒聲、停電、電腦當機)？</summary>
+                    <div class="qa-content">
+                        <strong>處理方式：</strong> 
+                        1. 若麥克風沒聲音，請改用宏亮聲音直接引導，或請音控更換備用麥克風。<br>
+                        2. 投影掛掉時，請會眾直接看聖經或聖詩。<br>
+                        3. [cite_start]若停電，請保持冷靜，打開門窗保持光線與通風，帶領會眾禱告或唱熟悉的詩歌。 [cite: 1006]
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Q5：發生地震或附近火災？</summary>
+                    <div class="qa-content">
+                        [cite_start]<strong>處理方式：</strong> 立即暫停禮拜。若地震強烈，請指示會眾就地掩護或依疏散動線離開建築物。安全第一。 [cite: 1007]
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Q6：講員遲到或還在塞車？</summary>
+                    <div class="qa-content">
+                        [cite_start]<strong>處理方式：</strong> 司會可多帶領唱詩歌、延長禱告時間，或請在場牧師/長老先分享見證或短講墊檔。 [cite: 1009]
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Q7：小孩哭鬧或會眾講話太大聲？</summary>
+                    <div class="qa-content">
+                        [cite_start]<strong>處理方式：</strong> 司會不需在台上公開指責。請招待同工輕聲前往提醒，或引導家長至婦幼區。 [cite: 1010]
+                    </div>
+                </details>
+
+                <details>
+                    <summary>Q8：有人突然倒地、昏倒或癲癇發作？</summary>
+                    <div class="qa-content">
+                        <strong>處理方式：</strong> 
+                        1. 立即指派長執打 119。<br>
+                        2. 具醫護背景會友前往協助。<br>
+                        3. [cite_start]司會帶領全體會眾為其迫切禱告，並保持現場安靜與秩序。 [cite: 1013]
+                    </div>
+                </details>
+
+                <div class="note-box" style="background:white; border:2px solid var(--accent); margin-top:20px;">
+                    <strong>🎵 禮拜中斷時的「救命詩歌」：新聖詩 159 首</strong><br>
+                    若發生狀況導致禮拜中斷，排除後為恢復平靜心境，請帶領會眾唱：<br>
+                    <strong>「主惦我心內，無驚惶自在。」</strong><br>
+                    [cite_start]<small>記憶口訣：159 (祂有救) [cite: 1035-1038]</small>
                 </div>
             </div>
         </section>
@@ -302,70 +374,60 @@
         <section id="sacrament">
             <h2><i class="fas fa-wine-glass-alt"></i> 聖禮典服事 (聖餐/洗禮)</h2>
             <ul>
-                <li><strong>服裝：</strong> 穿著長老服、戴白色手套。</li>
-                <li><strong>預備：</strong> 禮拜組長執準備餅、葡萄汁、洗禮水。</li>
-                <li><strong>流程：</strong>
+                [cite_start]<li><strong>服裝：</strong> 服事長老請穿著長老服、戴白色手套。 [cite: 1047]</li>
+                [cite_start]<li><strong>預備：</strong> 禮拜組長執準備餅、葡萄汁、洗禮水 (以玻璃盤盛裝)。 [cite: 1041]</li>
+                [cite_start]<li><strong>流程 SOP：</strong> [cite: 1043-1046]
                     <ol>
-                        <li>服事長老坐前排兩側。</li>
-                        <li>至台前排成一行接餅/杯。</li>
-                        <li>分發給會眾 (注意未受洗者)。</li>
-                        <li>分發完畢後，回後方集合，再一同回台前領受。</li>
+                        <li>服事長老坐在中間走道兩側最前排。</li>
+                        <li>至聖餐桌前排成一行，領受餅/杯。</li>
+                        <li>分發給會眾 (需注意領餐者是否已受洗)。</li>
+                        <li>分發完畢後，先在後方集合，再依序回台前領受，最後回座。</li>
                     </ol>
                 </li>
             </ul>
-            <div class="img-placeholder">(示意圖：聖餐桌擺設與服事站位圖)</div>
+            <div class="img-placeholder">(示意圖：聖餐服事站位與動線圖)</div>
         </section>
 
         <section id="reception">
             <h2><i class="fas fa-users"></i> 聚會招待</h2>
             <ul>
-                <li><strong>時間：</strong> 禮拜前 30 分鐘就位。</li>
-                <li><strong>工作：</strong>
+                [cite_start]<li><strong>時間：</strong> 禮拜前 30 分鐘就位。 [cite: 1057]</li>
+                [cite_start]<li><strong>職責：</strong> [cite: 1058-1064]
                     <ul>
-                        <li>發週報、招呼會友往前坐。</li>
-                        <li>協助新朋友填寫資料卡。</li>
-                        <li>引導親子至婦幼區。</li>
+                        <li>開啟窗戶、電燈、空調。</li>
+                        <li>發放週報，引導會眾往前坐。</li>
+                        <li>接待新朋友填寫資料卡。</li>
+                        <li>禮拜開始時關閉中間大門，僅留側門。</li>
                     </ul>
                 </li>
-                <li><strong>司獻：</strong> 禮拜進行至「啟應」後進入會堂，奉獻時由後方集合至台前拿奉獻袋。</li>
-                <li><strong>結束：</strong> 協助點收奉獻、關閉電源門窗。</li>
+                [cite_start]<li><strong>司獻：</strong> 禮拜進行至「啟應」後進入會堂。奉獻時由後方集合，拿奉獻袋從最前排開始傳。 [cite: 1065-1066]</li>
+                [cite_start]<li><strong>結束工作：</strong> 協助點收奉獻、關閉電源門窗。 [cite: 1069]</li>
             </ul>
         </section>
 
         <section id="music">
-            <h2><i class="fas fa-music"></i> 詩班與司琴</h2>
+            <h2><i class="fas fa-music"></i> 音樂與影音服事</h2>
             
             <h3>司琴</h3>
             <ul>
-                <li><strong>序樂：</strong> 幫助會眾安靜心，約 5 分鐘。</li>
-                <li><strong>應變：</strong> 隨時注意司會手勢，若有突發狀況需彈奏背景音樂緩和氣氛。</li>
-                <li><strong>工具：</strong> 推薦使用 <a href="https://bhpct.github.io/liturgist/musician.html" target="_blank">教會司琴平台</a>，支援腳踏板翻頁。</li>
+                [cite_start]<li><strong>序樂：</strong> 禮拜前彈奏約 5 分鐘序樂，幫助會眾安靜心。 [cite: 1079]</li>
+                [cite_start]<li><strong>配合度：</strong> 需隨時注意司會或講員的臨時需求 (如臨時加唱)。 [cite: 1088]</li>
             </ul>
 
-            <h3>詩班</h3>
+            <h3>投影片 (PPT)</h3>
             <ul>
-                <li>禮拜前 10 分鐘著裝完畢就座。</li>
-                <li>禮拜後協助收拾座位周遭整潔。</li>
-            </ul>
-        </section>
-
-        <section id="media">
-            <h2><i class="fas fa-desktop"></i> 投影片與音控</h2>
-            
-            <h3>投影片</h3>
-            <ul>
-                <li><strong>字體：</strong> 標楷體或粗黑體，至少 44 級字。</li>
-                <li><strong>內容：</strong> 歌詞、啟應文需全文；講道篇僅列重點或經文。</li>
-                <li><strong>準備：</strong> 檔案請存放在桌面「禮拜投影片」資料夾，依日期命名。</li>
+                [cite_start]<li><strong>字體：</strong> 建議標楷體或粗黑體，至少 44 級字以上。 [cite: 1093]</li>
+                [cite_start]<li><strong>內容：</strong> 歌詞、啟應文、信仰告白需全文打出。 [cite: 1095]</li>
+                [cite_start]<li><strong>檔案：</strong> 存放在桌面「禮拜投影片」資料夾，檔名依日期編碼。 [cite: 1098]</li>
             </ul>
 
             <h3>音控</h3>
             <ul>
-                <li><strong>測試：</strong> 提早接線、測試麥克風 (牧師專用為 1 號)。</li>
-                <li><strong>錄音：</strong> 確保講道錄音正常。</li>
-                <li><strong>善後：</strong> 聚會後務必檢查所有擴大機電源是否關閉。</li>
+                [cite_start]<li><strong>測試：</strong> 提早接線、測試麥克風 (牧師專用為 1 號)。 [cite: 1111, 1115]</li>
+                [cite_start]<li><strong>錄音：</strong> 確保講道錄音正常，避免收音失敗。 [cite: 1116]</li>
+                [cite_start]<li><strong>善後：</strong> 聚會後務必檢查所有擴大機電源是否關閉。 [cite: 1113]</li>
             </ul>
-            <div class="img-placeholder">(示意圖：音控台開關順序圖)</div>
+            <div class="img-placeholder">(示意圖：音控台開關順序與設定)</div>
         </section>
 
     </main>
