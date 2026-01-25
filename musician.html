@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>霧峰教會司琴平台</title>
+    <title>霧峰教會司琴平台 - 連續翻譜版</title>
     <style>
-        /* ==================== */
-        /* 司琴專用樣式 (全螢幕優化) */
-        /* ==================== */
         :root {
             --primary: #2c3e50;
-            --accent: #c0392b;
-            --bg-color: #222; /* 深色背景，保護司琴眼睛 */
+            --bg-color: #222; 
             --sidebar-width: 320px;
         }
         * { box-sizing: border-box; }
@@ -34,14 +30,12 @@
             gap: 15px;
             box-shadow: 2px 0 10px rgba(0,0,0,0.5);
             z-index: 10;
-            /* 關鍵修正：使用 width 進行過渡，而非 transform */
             transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.4s;
             flex-shrink: 0;
-            overflow: hidden; /* 收起時隱藏內容 */
-            white-space: nowrap; /* 防止文字在縮小時換行亂跳 */
+            overflow: hidden;
+            white-space: nowrap;
         }
         
-        /* 收折狀態：寬度歸零，Padding 歸零 */
         .sidebar.collapsed {
             width: 0;
             padding-left: 0;
@@ -57,13 +51,10 @@
             width: 100%; padding: 12px; font-size: 1.2rem; 
             border: 2px solid #ddd; border-radius: 5px; outline: none;
         }
-        .control-group input:focus { border-color: var(--primary); }
 
         .btn {
             background: var(--primary); color: white; border: none; padding: 15px;
             width: 100%; border-radius: 8px; font-size: 1.2rem; cursor: pointer; font-weight: bold;
-            transition: 0.2s;
-            text-align: center;
         }
         .btn:hover { background: #34495e; }
         .btn-full { background: #27ae60; margin-top: 5px; font-size: 1rem; padding: 10px; }
@@ -71,40 +62,34 @@
         .instructions {
             font-size: 0.9rem; color: #666; background: #f9f9f9; 
             padding: 15px; border-radius: 8px; line-height: 1.6;
-            white-space: normal; /* 說明文字允許換行 */
+            white-space: normal;
         }
 
-        /* --- 浮動選單按鈕 (永遠顯示) --- */
         .toggle-btn {
             position: absolute; top: 15px; left: 15px; z-index: 100;
             background: rgba(0,0,0,0.6); color: white; border: none;
             padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 1.2rem;
-            transition: opacity 0.3s;
         }
-        .toggle-btn:hover { background: rgba(0,0,0,0.9); }
 
-        /* --- 右側樂譜顯示區 --- */
+        /* --- 右側樂譜顯示區 (保持單頁) --- */
         .viewer {
-            flex: 1; /* 自動填滿剩餘空間 */
+            flex: 1;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: var(--bg-color);
             height: 100%;
-            width: 100%; /* 確保寬度佔滿 */
-            transition: all 0.4s ease; /* 跟隨側邊欄縮放 */
+            overflow: hidden;
         }
 
-        /* 圖片容器 */
         #sheet-music {
             max-width: 100%;
-            max-height: 100vh; /* 確保高度不超過視窗 */
+            max-height: 100vh;
             object-fit: contain;
             display: none;
         }
 
-        /* 頁碼指示器 */
         .page-indicator {
             position: absolute;
             bottom: 20px; right: 20px;
@@ -116,17 +101,9 @@
 
         .msg-box { color: #888; font-size: 1.5rem; text-align: center; }
 
-        /* --- RWD 手機版 --- */
         @media (max-width: 768px) {
-            .sidebar { 
-                position: absolute; height: 100%; width: 100%; 
-                transition: transform 0.3s ease; /* 手機版改回用位移，比較順 */
-            }
-            .sidebar.collapsed { 
-                transform: translateX(-100%); 
-                width: 100%; /* 手機版收起時保持寬度設定，但移出畫面 */
-                padding: 60px 20px; /* 保持 padding 以免內容跑版 */
-            }
+            .sidebar { position: absolute; height: 100%; width: 100%; transition: transform 0.3s ease;}
+            .sidebar.collapsed { transform: translateX(-100%); width: 100%; padding: 60px 20px; }
         }
     </style>
 </head>
@@ -138,19 +115,18 @@
     <h2>🎹 司琴樂譜平台</h2>
     
     <div class="control-group">
-        <label>聖詩號碼 (例如: 43)</label>
-        <input type="number" id="hymnNo" placeholder="輸入數字..." onkeydown="checkEnter(event)">
+        <label>聖詩編號 (例如: 43, 105)</label>
+        <input type="text" id="hymnNo" placeholder="多首請用逗點隔開" onkeydown="checkEnter(event)">
     </div>
 
     <button class="btn" onclick="loadMusic()">🔍 搜尋並顯示</button>
-    <button class="btn btn-full" onclick="toggleFullScreen()">⛶ 切換瀏覽器全螢幕</button>
+    <button class="btn btn-full" onclick="toggleFullScreen()">⛶ 切換全螢幕</button>
 
     <div class="instructions">
-        <strong>💡 司琴操作說明：</strong>
+        <strong>💡 翻譜說明：</strong>
         <ul>
-            <li><strong>翻下一頁：</strong> 踏板(右/下)、鍵盤(→ / ↓ / Space)、滑鼠滾輪向下、點擊畫面右側。</li>
-            <li><strong>翻上一頁：</strong> 踏板(左/上)、鍵盤(← / ↑)、滑鼠滾輪向上、點擊畫面左側。</li>
-            <li>找到樂譜後，此選單會自動收起，讓您專心看譜。</li>
+            <li><strong>翻頁：</strong>支援藍芽翻譜器、鍵盤(方向鍵/空白鍵)、滑鼠滾輪、或點擊螢幕左右側。</li>
+            <li><strong>多首模式：</strong>輸入 `43, 105` 會將 43 首接續 105 首，翻頁時會自動跨首。</li>
         </ul>
     </div>
 </div>
@@ -162,79 +138,88 @@
 </div>
 
 <script>
-    let currentHymnImages = [];
+    let allHymnPages = []; // 存儲所有搜尋到的圖片路徑
     let currentIndex = 0;
     
-    // --- 1. 搜尋並載入樂譜 ---
+    // --- 1. 搜尋並載入多首樂譜 ---
     async function loadMusic() {
-        const no = document.getElementById('hymnNo').value.trim();
+        const input = document.getElementById('hymnNo').value.trim();
         const msg = document.getElementById('message');
         const img = document.getElementById('sheet-music');
         const indicator = document.getElementById('pageIndicator');
 
-        if (!no) { msg.innerText = "請輸入號碼"; return; }
+        if (!input) { msg.innerText = "請輸入號碼"; return; }
 
-        msg.innerText = "🔍 搜尋中...";
+        msg.innerText = "🔍 正在合併載入多首樂譜...";
         img.style.display = 'none';
         indicator.style.display = 'none';
 
-        // 掃描圖片 (0~10頁)
-        currentHymnImages = [];
-        const checks = [];
-        for (let i = 0; i <= 10; i++) {
-            const path = `./hymn/伴奏${no}-${i}.jpg`;
-            const check = new Promise((resolve) => {
-                const temp = new Image();
-                temp.onload = () => resolve({ idx: i, path: path, exists: true });
-                temp.onerror = () => resolve({ idx: i, path: path, exists: false });
-                temp.src = path;
+        // 解析輸入的編號
+        const hymnNumbers = input.replace(/，/g, ',').split(',').map(s => s.trim()).filter(s => s !== "");
+        allHymnPages = [];
+
+        // 依序處理每一首聖詩
+        for (const no of hymnNumbers) {
+            const pageChecks = [];
+            // 每首聖詩掃描 0-8 頁
+            for (let i = 0; i <= 8; i++) {
+                const path = `./hymn/伴奏${no}-${i}.jpg`;
+                pageChecks.push(checkImage(path));
+            }
+            const results = await Promise.all(pageChecks);
+            // 將存在的圖片按順序加入總陣列
+            results.forEach(r => {
+                if (r.exists) allHymnPages.push(r.path);
             });
-            checks.push(check);
         }
 
-        const results = await Promise.all(checks);
-        
-        results.sort((a, b) => a.idx - b.idx).forEach(r => {
-            if (r.exists) currentHymnImages.push(r.path);
-        });
-
-        if (currentHymnImages.length > 0) {
+        if (allHymnPages.length > 0) {
             currentIndex = 0;
             showPage(0);
             msg.style.display = 'none';
             img.style.display = 'block';
             indicator.style.display = 'block';
-            
-            // **關鍵：找到樂譜後，自動強制收起設定欄**
-            toggleSidebar(true); 
+            toggleSidebar(true); // 載入完成自動縮回
         } else {
-            msg.innerText = `❌ 找不到「聖詩 ${no}」\n(請確認檔案是否為 hymn/伴奏${no}-x.jpg)`;
+            msg.innerText = `❌ 找不到輸入的聖詩檔案\n(請確認檔案路徑是否正確)`;
             msg.style.display = 'block';
-            // 沒找到則展開設定欄讓使用者重打
-            toggleSidebar(false);
         }
     }
 
-    // --- 2. 顯示特定頁面 ---
+    // 檢查圖片是否存在
+    function checkImage(path) {
+        return new Promise((resolve) => {
+            const temp = new Image();
+            temp.onload = () => resolve({ path: path, exists: true });
+            temp.onerror = () => resolve({ path: path, exists: false });
+            temp.src = path;
+        });
+    }
+
+    // --- 2. 顯示頁面 (完全相容原本邏輯) ---
     function showPage(index) {
-        if (currentHymnImages.length === 0) return;
+        if (allHymnPages.length === 0) return;
         if (index < 0) index = 0;
-        if (index >= currentHymnImages.length) index = currentHymnImages.length - 1;
+        if (index >= allHymnPages.length) index = allHymnPages.length - 1;
         
         currentIndex = index;
         const img = document.getElementById('sheet-music');
         const indicator = document.getElementById('pageIndicator');
         
-        img.src = currentHymnImages[currentIndex];
-        indicator.innerText = `${currentIndex + 1} / ${currentHymnImages.length}`;
+        img.src = allHymnPages[currentIndex];
+        indicator.innerText = `${currentIndex + 1} / ${allHymnPages.length}`;
+        
+        // 每次換頁將容器捲動回頂部 (以防萬一有溢出)
+        document.getElementById('viewer').scrollTop = 0;
     }
 
     function nextPage() { showPage(currentIndex + 1); }
     function prevPage() { showPage(currentIndex - 1); }
 
-    // --- 3. 鍵盤與踏板 ---
+    // --- 3. 翻譜器與鍵盤支援 ---
     document.addEventListener('keydown', (e) => {
         if (document.activeElement.tagName === 'INPUT') return;
+        // 兼容所有常見翻譜器的按鍵訊號
         switch(e.key) {
             case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ': case 'Enter':
                 e.preventDefault(); nextPage(); break;
@@ -243,21 +228,19 @@
         }
     });
 
-    // --- 4. 滑鼠滾輪 ---
+    // --- 4. 滑鼠滾輪翻頁 ---
     let wheelTimeout;
     document.addEventListener('wheel', (e) => {
         const sidebar = document.getElementById('sidebar');
-        // 如果側邊欄打開且滑鼠在側邊欄上，不要翻頁
         if (!sidebar.classList.contains('collapsed') && e.target.closest('.sidebar')) return;
-
         if (wheelTimeout) return;
         if (e.deltaY > 0) nextPage(); else prevPage();
         wheelTimeout = setTimeout(() => { wheelTimeout = null; }, 300);
     }, { passive: true });
 
-    // --- 5. 觸控/點擊 ---
+    // --- 5. 螢幕點擊翻頁 (左右半區) ---
     function handleTouch(e) {
-        if (e.target.closest('.toggle-btn')) return; // 點擊按鈕不翻頁
+        if (e.target.closest('.toggle-btn')) return;
         const width = window.innerWidth;
         if (e.clientX > width / 2) nextPage(); else prevPage();
     }
@@ -276,17 +259,13 @@
 
     function toggleFullScreen() {
         if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                alert(`Error: ${err.message}`);
-            });
+            document.documentElement.requestFullscreen();
         } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
+            document.exitFullscreen();
         }
     }
 
-    function checkEnter(e) { if (e.key === 'Enter') loadMusic(); }
+    function checkEnter(e) { if (e.key === 'Enter') { document.activeElement.blur(); loadMusic(); } }
 </script>
 
 </body>
