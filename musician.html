@@ -17,6 +17,7 @@
             background-color: var(--bg-color); overflow: hidden; 
         }
 
+        /* --- 左側控制欄 --- */
         .sidebar {
             width: var(--sidebar-width); background: #fff;
             padding: 60px 20px 20px 20px; display: flex; flex-direction: column; gap: 15px;
@@ -26,6 +27,9 @@
         
         .sidebar.collapsed { width: 0; padding: 0; border: none; }
 
+        h2 { margin: 0 0 10px 0; color: var(--primary); font-size: 1.5rem; text-align: center; }
+
+        .control-group label { display: block; color: #555; margin-bottom: 5px; font-weight: bold; }
         .control-group input {
             width: 100%; padding: 12px; font-size: 1.2rem; 
             border: 2px solid #ddd; border-radius: 5px; outline: none;
@@ -38,16 +42,30 @@
         .btn-full { background: #27ae60; margin-top: 5px; font-size: 0.9rem; padding: 10px; }
         
         .instructions {
-            font-size: 0.85rem; color: #666; background: #f9f9f9; 
-            padding: 12px; border-radius: 8px; line-height: 1.5; white-space: normal;
+            font-size: 0.85rem; color: #444; background: #f0f4f8; 
+            padding: 15px; border-radius: 8px; line-height: 1.6; white-space: normal;
+            border-left: 4px solid var(--primary);
         }
+
+        /* 頁尾版權樣式 */
+        .sidebar-footer {
+            margin-top: auto; /* 推到最下面 */
+            padding-top: 20px;
+            font-size: 0.75rem;
+            color: #999;
+            text-align: center;
+            line-height: 1.4;
+            white-space: normal;
+        }
+        .sidebar-footer a { color: #7f8c8d; text-decoration: underline; }
 
         .toggle-btn {
             position: absolute; top: 15px; left: 15px; z-index: 100;
             background: rgba(0,0,0,0.6); color: white; border: none;
-            padding: 8px 12px; border-radius: 5px; cursor: pointer;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 1.2rem;
         }
 
+        /* --- 右側樂譜顯示區 --- */
         .viewer {
             flex: 1; position: relative; display: flex;
             justify-content: center; align-items: center;
@@ -59,7 +77,7 @@
         .page-indicator {
             position: absolute; bottom: 20px; right: 20px;
             background: rgba(0,0,0,0.7); color: white;
-            padding: 8px 16px; border-radius: 20px; font-size: 1rem; display: none;
+            padding: 8px 16px; border-radius: 20px; font-size: 1rem; pointer-events: none; display: none;
         }
 
         .msg-box { color: #888; font-size: 1.5rem; text-align: center; }
@@ -75,20 +93,31 @@
 <button class="toggle-btn" onclick="toggleSidebar()">☰ 設定</button>
 
 <div class="sidebar" id="sidebar">
-    <h2 style="margin:0; color:var(--primary)">🎹 司琴平台</h2>
+    <h2>霧峰教會司琴平台</h2>
     
     <div class="control-group">
-        <label style="font-weight:bold; color:#555">聖詩編號</label>
-        <input type="text" id="hymnNo" inputmode="decimal" placeholder="例如: 43.105" onkeydown="checkEnter(event)">
+        <label>聖詩編號 (多首輸入)</label>
+        <input type="text" 
+               id="hymnNo" 
+               inputmode="decimal" 
+               placeholder="例如: 43, 105 或 43.105" 
+               onkeydown="checkEnter(event)">
     </div>
 
     <button class="btn" onclick="loadMusic()">🔍 搜尋並顯示</button>
-    <!-- 全螢幕按鈕，初始文字 -->
     <button id="fs-btn" class="btn btn-full" onclick="toggleFullScreen()">⛶ 電腦/Android 全螢幕</button>
 
     <div class="instructions">
-        <strong>💡 分隔提醒：</strong>
-        手機輸入多首時，請用數字鍵盤上的「點 (.)」或「空格」分開。
+        <strong>💡 分隔輸入說明：</strong><br>
+        • <strong>電腦：</strong>使用 <strong>逗點 (,)</strong>、<strong>點 (.)</strong> 或 <strong>空白鍵</strong>。<br>
+        • <strong>手機/平板：</strong>數字鍵盤上的 <strong>點 (.)</strong> 或 <strong>空白鍵</strong>。
+    </div>
+
+    <!-- 頁尾版權與資料來源 -->
+    <div class="sidebar-footer">
+        © 霧峰教會 2025<br><br>
+        資料來源：台灣基督長老教會(新)聖詩伴奏版<br>
+        <a href="https://churchmusic.pct.org.tw/download.htm" target="_blank">PCT 教會音樂網</a>
     </div>
 </div>
 
@@ -102,7 +131,7 @@
     let allHymnPages = [];
     let currentIndex = 0;
 
-    // --- 裝置判斷：針對 iOS 修改全螢幕按鈕 ---
+    // --- 裝置判斷 ---
     window.onload = function() {
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const fsBtn = document.getElementById('fs-btn');
@@ -110,11 +139,12 @@
             fsBtn.innerText = "ℹ️ iOS 全螢幕教學";
             fsBtn.style.backgroundColor = "#95a5a6";
             fsBtn.onclick = function() { 
-                alert("iPhone/iPad 瀏覽器限制無法直接切換全螢幕。\n\n建議：點擊 Safari 下方的「分享」圖示，選擇「加入主畫面」，之後從桌面開啟就像 App 一樣全螢幕了！");
+                alert("iOS 限制無法直接切換全螢幕。\n\n建議：點擊 Safari 下方的「分享」圖示，選擇「加入主畫面」，之後從桌面開啟即可達成 100% 全螢幕看譜。");
             };
         }
     };
 
+    // --- 搜尋邏輯 ---
     async function loadMusic() {
         const input = document.getElementById('hymnNo').value.trim();
         const msg = document.getElementById('message');
@@ -123,9 +153,11 @@
 
         if (!input) { return; }
 
-        msg.innerText = "🔍 搜尋中...";
+        msg.innerText = "🔍 正在載入聖詩樂譜...";
         img.style.display = 'none';
-        
+        indicator.style.display = 'none';
+
+        // 解析邏輯：支援半形逗點、全形逗點、點、空格
         const hymnNumbers = input.split(/[,，.\s]+/).filter(s => s !== "");
         allHymnPages = [];
 
@@ -136,7 +168,9 @@
                 pageChecks.push(checkImage(path));
             }
             const results = await Promise.all(pageChecks);
-            results.forEach(r => { if (r.exists) allHymnPages.push(r.path); });
+            results.forEach(r => {
+                if (r.exists) allHymnPages.push(r.path);
+            });
         }
 
         if (allHymnPages.length > 0) {
@@ -147,7 +181,7 @@
             indicator.style.display = 'block';
             toggleSidebar(true); 
         } else {
-            msg.innerText = "❌ 找不到樂譜";
+            msg.innerText = `❌ 找不到聖詩樂譜\n(輸入內容: ${input})`;
             msg.style.display = 'block';
         }
     }
@@ -165,9 +199,11 @@
         if (allHymnPages.length === 0) return;
         if (index < 0) index = 0;
         if (index >= allHymnPages.length) index = allHymnPages.length - 1;
+        
         currentIndex = index;
         const img = document.getElementById('sheet-music');
         const indicator = document.getElementById('pageIndicator');
+        
         img.src = allHymnPages[currentIndex];
         indicator.innerText = `${currentIndex + 1} / ${allHymnPages.length}`;
     }
@@ -175,6 +211,7 @@
     function nextPage() { showPage(currentIndex + 1); }
     function prevPage() { showPage(currentIndex - 1); }
 
+    // --- 翻譜支援 (藍芽翻譜器/鍵盤/滾輪) ---
     document.addEventListener('keydown', (e) => {
         if (document.activeElement.tagName === 'INPUT') return;
         switch(e.key) {
@@ -185,6 +222,7 @@
         }
     });
 
+    // 螢幕左右點擊翻頁
     function handleTouch(e) {
         if (e.target.closest('.toggle-btn')) return;
         const width = window.innerWidth;
@@ -201,14 +239,19 @@
     function toggleFullScreen() {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen().catch(err => {
-                alert("此裝置不支援自動全螢幕");
+                alert("您的瀏覽器不支持自動全螢幕，請手動調整。");
             });
         } else {
             document.exitFullscreen();
         }
     }
 
-    function checkEnter(e) { if (e.key === 'Enter') { document.activeElement.blur(); loadMusic(); } }
+    function checkEnter(e) { 
+        if (e.key === 'Enter') { 
+            document.activeElement.blur(); 
+            loadMusic(); 
+        } 
+    }
 </script>
 
 </body>
