@@ -49,7 +49,7 @@
 
         /* 頁尾版權樣式 */
         .sidebar-footer {
-            margin-top: auto; /* 推到最下面 */
+            margin-top: auto;
             padding-top: 20px;
             font-size: 0.75rem;
             color: #999;
@@ -87,30 +87,38 @@
             .sidebar.collapsed { transform: translateX(-100%); width: 100%; }
         }
 
+        /* 列印區塊的一般狀態 (隱藏) */
+        .print-only { display: none; }
+
         /* --- 列印專用樣式 --- */
         @media print {
-            /* 隱藏原本的 UI 介面，完全不干擾原始 DOM 結構 */
+            /* 修正手機黑畫面：強制白底黑字 */
+            body, html {
+                background-color: white !important;
+                color: black !important;
+            }
+
+            /* 隱藏 UI */
             .sidebar, .toggle-btn, .viewer { 
                 display: none !important; 
             }
             
-            /* 顯示並設定動態產生的列印區塊 */
-            #print-area { 
+            /* 顯示列印區塊 */
+            .print-only { 
                 display: block !important; 
                 width: 100%; 
             }
             
-            #print-area img {
+            .print-only img {
                 width: 100%;
                 height: auto;
-                max-height: 98vh; /* 避免稍微超出造成多餘空白頁 */
+                max-height: 98vh; 
                 object-fit: contain;
-                page-break-after: always; /* 確保每張樂譜獨立一頁 */
+                page-break-after: always; 
                 display: block;
                 margin: 0 auto;
             }
             
-            /* 移除預設邊距，盡量利用整張 A4 */
             @page { margin: 1cm; } 
         }
     </style>
@@ -160,7 +168,6 @@
     let allHymnPages = [];
     let currentIndex = 0;
 
-    // --- 裝置判斷 ---
     window.onload = function() {
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const fsBtn = document.getElementById('fs-btn');
@@ -173,7 +180,6 @@
         }
     };
 
-    // --- 搜尋邏輯 ---
     async function loadMusic() {
         const input = document.getElementById('hymnNo').value.trim();
         const msg = document.getElementById('message');
@@ -186,7 +192,6 @@
         img.style.display = 'none';
         indicator.style.display = 'none';
 
-        // 解析邏輯：支援半形逗點、全形逗點、點、空格
         const hymnNumbers = input.split(/[,，.\s]+/).filter(s => s !== "");
         allHymnPages = [];
 
@@ -240,7 +245,7 @@
     function nextPage() { showPage(currentIndex + 1); }
     function prevPage() { showPage(currentIndex - 1); }
 
-    // --- 翻譜支援 (藍芽翻譜器/鍵盤/滾輪) - 保留原本功能，絕不影響 ---
+    // --- 翻譜支援 (藍芽踏板/鍵盤/滾輪完全保留，絕不受影響) ---
     document.addEventListener('keydown', (e) => {
         if (document.activeElement.tagName === 'INPUT') return;
         switch(e.key) {
@@ -251,7 +256,6 @@
         }
     });
 
-    // 螢幕左右點擊翻頁
     function handleTouch(e) {
         if (e.target.closest('.toggle-btn')) return;
         const width = window.innerWidth;
@@ -282,37 +286,43 @@
         } 
     }
 
-    // --- 列印與輸出 PDF ---
+    // --- 修正後的列印邏輯 ---
     function printMusic() {
         if (allHymnPages.length === 0) {
             alert("請先搜尋並載入樂譜後再列印！");
             return;
         }
 
-        // 1. 建立一個專門用來列印的隱藏區塊
+        // 1. 確保清除舊的列印區塊，釋放手機記憶體避免黑畫面
+        let oldPrintArea = document.getElementById('print-area');
+        if (oldPrintArea) {
+            oldPrintArea.remove();
+        }
+
+        // 2. 建立新的列印區塊
         const printArea = document.createElement('div');
         printArea.id = 'print-area';
-        printArea.style.display = 'none'; // 平常不佔據畫面空間，只有列印時由 CSS 顯示
+        printArea.className = 'print-only'; // 使用 Class 隱藏，而不是 inline style
 
-        // 2. 把目前搜尋到的所有樂譜圖片，全部加入這個區塊
         allHymnPages.forEach(src => {
             const img = document.createElement('img');
             img.src = src;
             printArea.appendChild(img);
         });
 
-        // 3. 將區塊放入網頁的最尾端 (DOM 中)
         document.body.appendChild(printArea);
 
-        // 4. 給瀏覽器一點點時間載入圖片，然後觸發列印
-        setTimeout(() => {
-            window.print();
-            
-            // 5. 列印視窗關閉後，把這個暫時的區塊刪除，讓網頁恢復原狀
-            setTimeout(() => {
-                printArea.remove();
-            }, 1000);
-        }, 300);
+        // 3. 強制瀏覽器排版一次 (這是一個小技巧，讓手機立刻知道有圖片加進來了)
+        void printArea.offsetHeight;
+
+        // 4. 直接同步呼叫列印 (拿掉 setTimeout 避免被手機當作惡意彈出阻擋)
+        window.print();
+
+        // 5. 註冊一個事件：當「列印畫面關閉後」再安全清除資源
+        window.addEventListener('afterprint', () => {
+            const cleanupArea = document.getElementById('print-area');
+            if (cleanupArea) cleanupArea.remove();
+        }, { once: true });
     }
 </script>
 
