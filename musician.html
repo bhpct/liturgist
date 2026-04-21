@@ -86,6 +86,33 @@
             .sidebar { position: absolute; height: 100%; width: 100%; transition: transform 0.3s ease;}
             .sidebar.collapsed { transform: translateX(-100%); width: 100%; }
         }
+
+        /* --- 列印專用樣式 --- */
+        @media print {
+            /* 隱藏原本的 UI 介面，完全不干擾原始 DOM 結構 */
+            .sidebar, .toggle-btn, .viewer { 
+                display: none !important; 
+            }
+            
+            /* 顯示並設定動態產生的列印區塊 */
+            #print-area { 
+                display: block !important; 
+                width: 100%; 
+            }
+            
+            #print-area img {
+                width: 100%;
+                height: auto;
+                max-height: 98vh; /* 避免稍微超出造成多餘空白頁 */
+                object-fit: contain;
+                page-break-after: always; /* 確保每張樂譜獨立一頁 */
+                display: block;
+                margin: 0 auto;
+            }
+            
+            /* 移除預設邊距，盡量利用整張 A4 */
+            @page { margin: 1cm; } 
+        }
     </style>
 </head>
 <body>
@@ -106,6 +133,8 @@
 
     <button class="btn" onclick="loadMusic()">🔍 搜尋並顯示</button>
     <button id="fs-btn" class="btn btn-full" onclick="toggleFullScreen()">⛶ 電腦/Android 全螢幕</button>
+    
+    <button class="btn btn-full" onclick="printMusic()" style="background: #e67e22; margin-top: 10px;">🖨️ 列印 / 下載 PDF</button>
 
     <div class="instructions">
         <strong>💡 分隔輸入說明：</strong><br>
@@ -114,7 +143,6 @@
         • <strong>支援：</strong>螢幕點選左右切換、鍵盤上下切換、鍵盤左右切換、藍芽踏板切換。<br>
     </div>
 
-    <!-- 頁尾版權與資料來源 -->
     <div class="sidebar-footer">
        霧峰教會司琴平台 © 霧峰教會 2025<br><br>
         資料來源：台灣基督長老教會總會 教會禮拜與音樂委員會<br>
@@ -212,7 +240,7 @@
     function nextPage() { showPage(currentIndex + 1); }
     function prevPage() { showPage(currentIndex - 1); }
 
-    // --- 翻譜支援 (藍芽翻譜器/鍵盤/滾輪) ---
+    // --- 翻譜支援 (藍芽翻譜器/鍵盤/滾輪) - 保留原本功能，絕不影響 ---
     document.addEventListener('keydown', (e) => {
         if (document.activeElement.tagName === 'INPUT') return;
         switch(e.key) {
@@ -252,6 +280,39 @@
             document.activeElement.blur(); 
             loadMusic(); 
         } 
+    }
+
+    // --- 列印與輸出 PDF ---
+    function printMusic() {
+        if (allHymnPages.length === 0) {
+            alert("請先搜尋並載入樂譜後再列印！");
+            return;
+        }
+
+        // 1. 建立一個專門用來列印的隱藏區塊
+        const printArea = document.createElement('div');
+        printArea.id = 'print-area';
+        printArea.style.display = 'none'; // 平常不佔據畫面空間，只有列印時由 CSS 顯示
+
+        // 2. 把目前搜尋到的所有樂譜圖片，全部加入這個區塊
+        allHymnPages.forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            printArea.appendChild(img);
+        });
+
+        // 3. 將區塊放入網頁的最尾端 (DOM 中)
+        document.body.appendChild(printArea);
+
+        // 4. 給瀏覽器一點點時間載入圖片，然後觸發列印
+        setTimeout(() => {
+            window.print();
+            
+            // 5. 列印視窗關閉後，把這個暫時的區塊刪除，讓網頁恢復原狀
+            setTimeout(() => {
+                printArea.remove();
+            }, 1000);
+        }, 300);
     }
 </script>
 
