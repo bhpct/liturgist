@@ -92,10 +92,12 @@
 
         /* --- 列印專用樣式 --- */
         @media print {
-            /* 修正手機黑畫面：強制白底黑字 */
+            /* 修正手機黑畫面與空白頁：徹底解除原本 App 版面的高度限制 */
             body, html {
                 background-color: white !important;
                 color: black !important;
+                height: auto !important; 
+                overflow: visible !important; 
             }
 
             /* 隱藏 UI */
@@ -107,16 +109,30 @@
             .print-only { 
                 display: block !important; 
                 width: 100%; 
+                margin: 0;
+                padding: 0;
             }
             
             .print-only img {
-                width: 100%;
+                max-width: 100%;
+                /* 將高度稍微降到 90vh，確保加上邊界後絕對不會超過一張 A4，避免溢出成空白頁 */
+                max-height: 90vh; 
                 height: auto;
-                max-height: 98vh; 
                 object-fit: contain;
-                page-break-after: always; 
                 display: block;
                 margin: 0 auto;
+                
+                /* 確保圖片不被切斷，並強制換頁 */
+                page-break-inside: avoid;
+                break-inside: avoid;
+                page-break-after: always;
+                break-after: always;
+            }
+
+            /* 修正：最後一張圖片後方取消強制換頁，避免最後多出一張空白頁 */
+            .print-only img:last-child {
+                page-break-after: auto;
+                break-after: auto;
             }
             
             @page { margin: 1cm; } 
@@ -245,7 +261,7 @@
     function nextPage() { showPage(currentIndex + 1); }
     function prevPage() { showPage(currentIndex - 1); }
 
-    // --- 翻譜支援 (藍芽踏板/鍵盤/滾輪完全保留，絕不受影響) ---
+    // --- 翻譜支援 (完全保留) ---
     document.addEventListener('keydown', (e) => {
         if (document.activeElement.tagName === 'INPUT') return;
         switch(e.key) {
@@ -293,16 +309,14 @@
             return;
         }
 
-        // 1. 確保清除舊的列印區塊，釋放手機記憶體避免黑畫面
         let oldPrintArea = document.getElementById('print-area');
         if (oldPrintArea) {
             oldPrintArea.remove();
         }
 
-        // 2. 建立新的列印區塊
         const printArea = document.createElement('div');
         printArea.id = 'print-area';
-        printArea.className = 'print-only'; // 使用 Class 隱藏，而不是 inline style
+        printArea.className = 'print-only'; 
 
         allHymnPages.forEach(src => {
             const img = document.createElement('img');
@@ -312,13 +326,10 @@
 
         document.body.appendChild(printArea);
 
-        // 3. 強制瀏覽器排版一次 (這是一個小技巧，讓手機立刻知道有圖片加進來了)
         void printArea.offsetHeight;
 
-        // 4. 直接同步呼叫列印 (拿掉 setTimeout 避免被手機當作惡意彈出阻擋)
         window.print();
 
-        // 5. 註冊一個事件：當「列印畫面關閉後」再安全清除資源
         window.addEventListener('afterprint', () => {
             const cleanupArea = document.getElementById('print-area');
             if (cleanupArea) cleanupArea.remove();
