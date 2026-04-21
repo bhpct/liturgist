@@ -88,54 +88,53 @@
         }
 
         /* 列印區塊的一般狀態 (隱藏) */
-        .print-only { display: none; }
+        #print-area { display: none; }
 
         /* --- 列印專用樣式 --- */
         @media print {
-            /* 修正手機黑畫面與空白頁：徹底解除原本 App 版面的高度限制 */
+            /* 歸零所有邊距，解除全螢幕限制 */
             body, html {
                 background-color: white !important;
                 color: black !important;
                 height: auto !important; 
+                min-height: auto !important;
                 overflow: visible !important; 
+                margin: 0 !important;
+                padding: 0 !important;
             }
 
-            /* 隱藏 UI */
+            /* 隱藏不想印出的介面 */
             .sidebar, .toggle-btn, .viewer { 
                 display: none !important; 
             }
             
             /* 顯示列印區塊 */
-            .print-only { 
+            #print-area { 
                 display: block !important; 
                 width: 100%; 
                 margin: 0;
                 padding: 0;
             }
             
-            .print-only img {
-                max-width: 100%;
-                /* 將高度稍微降到 90vh，確保加上邊界後絕對不會超過一張 A4，避免溢出成空白頁 */
-                max-height: 90vh; 
+            #print-area img {
+                width: 100%;
+                max-height: 98vh; /* 限制單張圖片最大高度 */
                 height: auto;
                 object-fit: contain;
                 display: block;
                 margin: 0 auto;
-                
-                /* 確保圖片不被切斷，並強制換頁 */
                 page-break-inside: avoid;
                 break-inside: avoid;
-                page-break-after: always;
-                break-after: always;
             }
 
-            /* 修正：最後一張圖片後方取消強制換頁，避免最後多出一張空白頁 */
-            .print-only img:last-child {
-                page-break-after: auto;
-                break-after: auto;
+            /* ✨ 解決多一張空白頁的魔法：只在「第二張圖片開始」的前面強制換頁 ✨ */
+            #print-area img + img {
+                page-break-before: always;
+                break-before: always;
             }
             
-            @page { margin: 1cm; } 
+            /* 設定 A4 邊界，使用 5mm 小邊距避免超出紙張邊緣 */
+            @page { margin: 5mm; } 
         }
     </style>
 </head>
@@ -180,6 +179,8 @@
     <div id="pageIndicator" class="page-indicator">1 / 1</div>
 </div>
 
+<div id="print-area"></div>
+
 <script>
     let allHymnPages = [];
     let currentIndex = 0;
@@ -201,6 +202,7 @@
         const msg = document.getElementById('message');
         const img = document.getElementById('sheet-music');
         const indicator = document.getElementById('pageIndicator');
+        const printArea = document.getElementById('print-area');
 
         if (!input) { return; }
 
@@ -230,9 +232,19 @@
             img.style.display = 'block';
             indicator.style.display = 'block';
             toggleSidebar(true); 
+            
+            // ✨ 解決被 Safari 阻擋的魔法：在搜尋完成時，就先把圖片塞進隱藏的列印區 ✨
+            printArea.innerHTML = ''; // 清空舊的
+            allHymnPages.forEach(src => {
+                const printImg = document.createElement('img');
+                printImg.src = src;
+                printArea.appendChild(printImg);
+            });
+
         } else {
             msg.innerText = `❌ 找不到聖詩樂譜\n(輸入內容: ${input})`;
             msg.style.display = 'block';
+            printArea.innerHTML = ''; // 清空列印區
         }
     }
 
@@ -302,38 +314,16 @@
         } 
     }
 
-    // --- 修正後的列印邏輯 ---
+    // --- 列印按鈕邏輯 ---
     function printMusic() {
         if (allHymnPages.length === 0) {
             alert("請先搜尋並載入樂譜後再列印！");
             return;
         }
-
-        let oldPrintArea = document.getElementById('print-area');
-        if (oldPrintArea) {
-            oldPrintArea.remove();
-        }
-
-        const printArea = document.createElement('div');
-        printArea.id = 'print-area';
-        printArea.className = 'print-only'; 
-
-        allHymnPages.forEach(src => {
-            const img = document.createElement('img');
-            img.src = src;
-            printArea.appendChild(img);
-        });
-
-        document.body.appendChild(printArea);
-
-        void printArea.offsetHeight;
-
+        
+        // ✨ 現在列印按鈕 "只做一件事"：呼叫列印。
+        // 沒有任何延遲或 DOM 操作，絕對不會被手機阻擋！✨
         window.print();
-
-        window.addEventListener('afterprint', () => {
-            const cleanupArea = document.getElementById('print-area');
-            if (cleanupArea) cleanupArea.remove();
-        }, { once: true });
     }
 </script>
 
