@@ -90,25 +90,28 @@
         /* 列印區塊的一般狀態 (隱藏) */
         #print-area { display: none; }
 
-        /* --- 列印專用樣式 --- */
+        /* --- 終極版列印專用樣式 --- */
         @media print {
-            /* 歸零所有邊距，解除全螢幕限制 */
+            /* 1. 將邊距歸零，交給 iOS 系統預設控制，避免我們自訂的邊距把畫面擠出多一頁空白 */
+            @page { margin: 0; } 
+            
+            /* 2. 徹底重置頁面屬性 */
             body, html {
                 background-color: white !important;
                 color: black !important;
                 height: auto !important; 
-                min-height: auto !important;
+                min-height: 0 !important;
                 overflow: visible !important; 
                 margin: 0 !important;
                 padding: 0 !important;
             }
 
-            /* 隱藏不想印出的介面 */
-            .sidebar, .toggle-btn, .viewer { 
+            /* 3. 暴力隱藏法：除了 #print-area 之外，body 底下的所有東西通通消失不佔空間 */
+            body > :not(#print-area) { 
                 display: none !important; 
             }
             
-            /* 顯示列印區塊 */
+            /* 4. 列印區塊滿版顯示 */
             #print-area { 
                 display: block !important; 
                 width: 100%; 
@@ -118,23 +121,19 @@
             
             #print-area img {
                 width: 100%;
-                max-height: 98vh; /* 限制單張圖片最大高度 */
-                height: auto;
-                object-fit: contain;
+                height: auto; /* ❌ 絕對不要用 vh，這是 iOS 印出空白頁的元凶 */
                 display: block;
-                margin: 0 auto;
+                margin: 0;
+                padding: 0;
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
 
-            /* ✨ 解決多一張空白頁的魔法：只在「第二張圖片開始」的前面強制換頁 ✨ */
+            /* 5. 確保只在兩張圖片「之間」換頁，最後一張後面絕對不換頁 */
             #print-area img + img {
                 page-break-before: always;
-                break-before: always;
+                break-before: page;
             }
-            
-            /* 設定 A4 邊界，使用 5mm 小邊距避免超出紙張邊緣 */
-            @page { margin: 5mm; } 
         }
     </style>
 </head>
@@ -233,8 +232,8 @@
             indicator.style.display = 'block';
             toggleSidebar(true); 
             
-            // ✨ 解決被 Safari 阻擋的魔法：在搜尋完成時，就先把圖片塞進隱藏的列印區 ✨
-            printArea.innerHTML = ''; // 清空舊的
+            // 提早準備列印區塊
+            printArea.innerHTML = ''; 
             allHymnPages.forEach(src => {
                 const printImg = document.createElement('img');
                 printImg.src = src;
@@ -244,7 +243,7 @@
         } else {
             msg.innerText = `❌ 找不到聖詩樂譜\n(輸入內容: ${input})`;
             msg.style.display = 'block';
-            printArea.innerHTML = ''; // 清空列印區
+            printArea.innerHTML = ''; 
         }
     }
 
@@ -273,7 +272,7 @@
     function nextPage() { showPage(currentIndex + 1); }
     function prevPage() { showPage(currentIndex - 1); }
 
-    // --- 翻譜支援 (完全保留) ---
+    // --- 藍芽踏板/鍵盤支援 (原封不動) ---
     document.addEventListener('keydown', (e) => {
         if (document.activeElement.tagName === 'INPUT') return;
         switch(e.key) {
@@ -314,15 +313,13 @@
         } 
     }
 
-    // --- 列印按鈕邏輯 ---
+    // --- 列印觸發邏輯 ---
     function printMusic() {
         if (allHymnPages.length === 0) {
             alert("請先搜尋並載入樂譜後再列印！");
             return;
         }
-        
-        // ✨ 現在列印按鈕 "只做一件事"：呼叫列印。
-        // 沒有任何延遲或 DOM 操作，絕對不會被手機阻擋！✨
+        // 直接觸發，不再延遲
         window.print();
     }
 </script>
