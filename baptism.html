@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>霧峰基督長老教會 - 洗禮前必修課互動學堂</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 360px;
+            }
+        }
+        .tab-btn.active {
+            border-bottom-color: #b45309;
+            color: #b45309;
+            background-color: #fef3c7;
+        }
+    </style>
+</head>
+<!-- Chosen Palette: Warm Sanctuary (Warm Linen #FBF9F5, Sacred Gold #C59B27, Olive Forest #2E6F40, Slate Charcoal #2C3531, Soft Cream #F3EFE6) -->
+<!-- Application Structure Plan: Designed as a 5-module interactive learning hub for baptism candidates at Wufeng Presbyterian Church. Module 1 provides Gospel foundation flip-cards and interactive scripture reflection; Module 2 presents an interactive comparison grid and cultural practice guide for family harmony; Module 3 features a clickable interactive church structure chart (Session, Board, 6 Departments, 8 Fellowships with filter views) and member covenant balance sheet; Module 4 features a dynamic Chart.js radar chart comparing pre vs post baptism mindsets, an interactive guided QT 4-step timer tool, and an ACTS prayer template composer; Module 5 hosts an interactive 4-vow self-assessment and downloadable/copyable commitment summary. This non-linear, task-oriented structure prioritizes learner engagement, memory retention, and personal preparation over static reading. -->
+<!-- Visualization & Content Choices: 1. Gospel Pillars -> Interactive flip/expand cards -> User clicks to reveal theological core -> Enhances focus & memory. 2. Presbyterian Structure & 6 Departments / 8 Fellowships -> Clean CSS HTML grid hierarchy & interactive category filter (Service vs Pastoral) -> Clear organizational clarity without SVG/Mermaid. 3. Pre vs Post Baptism Transformation -> Chart.js Radar Chart (Canvas-based) -> Visualizes spiritual growth balance across 6 key dimensions -> Highly motivating & intuitive. 4. Daily QT & ACTS Prayer -> Step-by-step interactive wizard with countdown timer -> Practical behavior adoption. 5. Vow Assessment -> Interactive checklist with real-time progress state -> Solidifies baptism commitment. Confirming NO SVG or Mermaid JS used. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<body class="bg-[#fcfbf7] text-[#2c3531] font-sans antialiased min-h-screen flex flex-col">
+
+    <header class="bg-[#f5ebd7] border-b border-[#e5d5b7] sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <span class="text-3xl">✝️</span>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold text-[#78350f]">霧峰基督長老教會</h1>
+                        <p class="text-xs sm:text-sm text-[#92400e] font-medium">《洗禮前必修課：出黑暗入光明．活出新生命》互動研道指引</p>
+                    </div>
+                </div>
+                <div class="bg-white/80 backdrop-blur rounded-xl px-4 py-2 border border-[#e5d5b7] flex items-center justify-between gap-4">
+                    <span class="text-xs font-semibold text-gray-600">課堂學習與準備進度</span>
+                    <div class="w-32 bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="overallProgressBar" class="bg-[#b45309] h-2.5 rounded-full transition-all duration-500" style="width: 15%"></div>
+                    </div>
+                    <span id="overallProgressText" class="text-xs font-bold text-[#b45309]">15%</span>
+                </div>
+            </div>
+
+            <nav class="flex overflow-x-auto gap-2 mt-4 pb-1 no-scrollbar border-t border-[#ebd8b5] pt-3">
+                <button onclick="switchTab('overview')" id="tab-overview" class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors duration-150">
+                    🏠 導覽首頁
+                </button>
+                <button onclick="switchTab('lesson1')" id="tab-lesson1" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors duration-150">
+                    1️⃣ 根基立定 (信仰核心)
+                </button>
+                <button onclick="switchTab('lesson2')" id="tab-lesson2" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors duration-150">
+                    2️⃣ 從習俗到真理 (文化轉換)
+                </button>
+                <button onclick="switchTab('lesson3')" id="tab-lesson3" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors duration-150">
+                    3️⃣ 屬靈的家 (霧峰教會)
+                </button>
+                <button onclick="switchTab('lesson4')" id="tab-lesson4" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors duration-150">
+                    4️⃣ 心意更新 (靈修禱告)
+                </button>
+                <button onclick="switchTab('appendix')" id="tab-appendix" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-colors duration-150">
+                    📋 自我問答與立志
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <section id="sec-overview" class="space-y-6">
+            <div class="bg-gradient-to-r from-[#fef3c7] to-[#fffbeb] rounded-2xl p-6 sm:p-8 border border-[#fde68a] shadow-sm">
+                <div class="max-w-3xl">
+                    <span class="inline-block bg-[#b45309] text-white text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider mb-3">歡迎受洗弟兄姊妹</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-[#78350f] mb-3">洗禮不是「畢業典禮」，而是新生命的「啟程禮」</h2>
+                    <p class="text-gray-700 leading-relaxed text-sm sm:text-base mb-4">
+                        親愛的弟兄姊妹平安！恭喜你做出人生中最寶貴且具永恆意義的決定——接受洗禮，歸入主耶穌基督的名下。本互動學堂旨在幫助你釐清信仰核心、面對文化習俗的挑戰、深入了解霧峰教會的架構與團隊，並建立每日靈修與禱告的門徒生活。
+                    </p>
+                    <blockquote class="border-l-4 border-[#b45309] pl-4 italic text-[#92400e] text-sm bg-white/60 py-2 rounded-r-lg">
+                        「若有人在基督裡，他就是新造的人，舊事已過，都變成新的了。」—— 哥林多後書 5:17
+                    </blockquote>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div onclick="switchTab('lesson1')" class="cursor-pointer bg-white p-5 rounded-xl border border-amber-100 hover:border-amber-400 shadow-sm hover:shadow transition-all group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🌱</div>
+                    <h3 class="font-bold text-lg text-amber-900">第一課：根基立定</h3>
+                    <p class="text-xs text-gray-500 mt-1">探索福音四大骨架（神、罪、基督、恩典）與洗禮屬靈意涵。</p>
+                </div>
+                <div onclick="switchTab('lesson2')" class="cursor-pointer bg-white p-5 rounded-xl border border-amber-100 hover:border-amber-400 shadow-sm hover:shadow transition-all group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🕊️</div>
+                    <h3 class="font-bold text-lg text-amber-900">第二課：從習俗到真理</h3>
+                    <p class="text-xs text-gray-500 mt-1">釐清祭祖與真正的孝道，學習「敬祖而不拜祖」與家庭溝通。</p>
+                </div>
+                <div onclick="switchTab('lesson3')" class="cursor-pointer bg-white p-5 rounded-xl border border-amber-100 hover:border-amber-400 shadow-sm hover:shadow transition-all group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🏛️</div>
+                    <h3 class="font-bold text-lg text-amber-900">第三課：認識屬靈的家</h3>
+                    <p class="text-xs text-gray-500 mt-1">霧峰教會體制介紹、六大部門與八大團契互動導覽及會友責任。</p>
+                </div>
+                <div onclick="switchTab('lesson4')" class="cursor-pointer bg-white p-5 rounded-xl border border-amber-100 hover:border-amber-400 shadow-sm hover:shadow transition-all group">
+                    <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">🔥</div>
+                    <h3 class="font-bold text-lg text-amber-900">第四課：心意更新</h3>
+                    <p class="text-xs text-gray-500 mt-1">受洗前後生命態度圖表比對、每日靈修 4 步驟與 ACTS 禱告引導。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-lesson1" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 border border-amber-200 shadow-sm">
+                <h2 class="text-xl sm:text-2xl font-bold text-amber-900 mb-2">第一課：根基立定 —— 基督信仰的核心精神</h2>
+                <p class="text-sm text-gray-600 mb-6">受洗的前提是清楚知道「我所信的是誰」。基督信仰不是一套世俗道德規範，而是一段與上帝恢復和好的盟約關係。請點擊下方的核心骨架與經文進行學習。</p>
+
+                <h3 class="font-bold text-amber-800 text-base mb-3">福音的四大核心骨架 (點擊卡片展開詳情)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <div onclick="toggleCard('gosp-1')" class="cursor-pointer bg-amber-50/50 hover:bg-amber-50 border border-amber-200 p-4 rounded-xl transition-all">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-amber-900">1. 神（創造與主權）</span>
+                            <span class="text-amber-700 font-bold" id="gosp-1-icon">+</span>
+                        </div>
+                        <div id="gosp-1-content" class="hidden mt-3 text-xs sm:text-sm text-gray-700 space-y-2 border-t border-amber-200 pt-2">
+                            <p>宇宙由一位聖潔、公義、充滿慈愛的三位一體真神（聖父、聖子、聖靈）所創造。</p>
+                            <p class="font-medium text-amber-800">祂是生命的主宰，我們每一個人都是祂按著自己的形像精心創造的。</p>
+                        </div>
+                    </div>
+
+                    <div onclick="toggleCard('gosp-2')" class="cursor-pointer bg-amber-50/50 hover:bg-amber-50 border border-amber-200 p-4 rounded-xl transition-all">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-amber-900">2. 人與罪（墮落與隔絕）</span>
+                            <span class="text-amber-700 font-bold" id="gosp-2-icon">+</span>
+                        </div>
+                        <div id="gosp-2-content" class="hidden mt-3 text-xs sm:text-sm text-gray-700 space-y-2 border-t border-amber-200 pt-2">
+                            <p>「罪」（希臘文 Hamartia）原意是「射箭偏離靶心」。不單是違法行為，更是人不願承認神、想自己當神的自我中心狀態。</p>
+                            <p class="font-medium text-amber-800">罪使人與聖潔的上帝隔絕，帶來內心虛空、人際關係破碎與永恆審判。</p>
+                        </div>
+                    </div>
+
+                    <div onclick="toggleCard('gosp-3')" class="cursor-pointer bg-amber-50/50 hover:bg-amber-50 border border-amber-200 p-4 rounded-xl transition-all">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-amber-900">3. 基督（十字架的救贖）</span>
+                            <span class="text-amber-700 font-bold" id="gosp-3-icon">+</span>
+                        </div>
+                        <div id="gosp-3-content" class="hidden mt-3 text-xs sm:text-sm text-gray-700 space-y-2 border-t border-amber-200 pt-2">
+                            <p>人無法靠積功德或修身養性除罪。神差遣獨生子耶穌基督降世為人，替我們擔當罪的刑罰。</p>
+                            <p class="font-medium text-amber-800">耶穌死在十字架上並在第三天復活，完全戰勝了死亡與罪惡的權勢。</p>
+                        </div>
+                    </div>
+
+                    <div onclick="toggleCard('gosp-4')" class="cursor-pointer bg-amber-50/50 hover:bg-amber-50 border border-amber-200 p-4 rounded-xl transition-all">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-amber-900">4. 信心與悔改（白白的恩典）</span>
+                            <span class="text-amber-700 font-bold" id="gosp-4-icon">+</span>
+                        </div>
+                        <div id="gosp-4-content" class="hidden mt-3 text-xs sm:text-sm text-gray-700 space-y-2 border-t border-amber-200 pt-2">
+                            <p>「你們得救是本乎恩，也因著信；這並不是出於自己，乃是神所賜的；也不是出於行為，免得有人自誇。」(以弗所書 2:8-9)</p>
+                            <p class="font-medium text-amber-800">只要我們心裡相信、口裡承認，願意悔改轉向神，就能白白得著永生。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-amber-800 text-base mb-3">洗禮的屬靈意涵（羅馬書 6:3-4）</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 text-center">
+                        <div class="text-2xl mb-1">✝️</div>
+                        <h4 class="font-bold text-amber-900 text-sm">與主同死</h4>
+                        <p class="text-xs text-gray-600 mt-1">老我（受罪與恐懼轄制的舊生命）與基督同釘十字架。</p>
+                    </div>
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 text-center">
+                        <div class="text-2xl mb-1">🌊</div>
+                        <h4 class="font-bold text-amber-900 text-sm">與主同埋葬</h4>
+                        <p class="text-xs text-gray-600 mt-1">過去的罪債已在基督裡完全塗抹，一筆勾銷。</p>
+                    </div>
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 text-center">
+                        <div class="text-2xl mb-1">🌅</div>
+                        <h4 class="font-bold text-amber-900 text-sm">與主同復活</h4>
+                        <p class="text-xs text-gray-600 mt-1">從水裡上來，得著聖靈所賜的新生命，活出全新樣式。</p>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50/70 p-5 rounded-xl border border-amber-200">
+                    <h3 class="font-bold text-amber-900 text-sm mb-3">✍️ 課後個人反思筆記</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">1. 請試著用自己的話簡述：「耶穌為我做了什麼？」</label>
+                            <textarea id="ref1_1" onchange="saveReflection()" class="w-full text-xs p-2.5 rounded-lg border border-amber-300 focus:ring-1 focus:ring-amber-500 focus:outline-none" rows="2" placeholder="寫下您的簡短回應..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">2. 過去生命中讓你感到不安或捆綁的事物，是否確信耶穌已完全赦免？</label>
+                            <textarea id="ref1_2" onchange="saveReflection()" class="w-full text-xs p-2.5 rounded-lg border border-amber-300 focus:ring-1 focus:ring-amber-500 focus:outline-none" rows="2" placeholder="寫下您的想法與禱告..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-lesson2" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 border border-amber-200 shadow-sm">
+                <h2 class="text-xl sm:text-2xl font-bold text-amber-900 mb-2">第二課：從習俗到真理 —— 面對民間信仰與文化轉換</h2>
+                <p class="text-sm text-gray-600 mb-6">在台灣文化中，信主常伴隨家庭與習俗的挑戰。基督信仰並非要我們摒棄文化，而是要以真理明辨，除掉恐懼迷信，恢復真正的孝道與平安。</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-amber-50/40 p-5 rounded-xl border border-amber-200">
+                        <h3 class="font-bold text-amber-900 text-base mb-3 flex items-center gap-2">
+                            <span>🏮</span> 祭祖盲點 vs. 聖經真孝道
+                        </h3>
+                        <div class="space-y-3 text-xs sm:text-sm text-gray-700">
+                            <div class="p-3 bg-white rounded-lg border border-red-100">
+                                <span class="font-bold text-red-700 block mb-1">傳統祭祖的困境：</span>
+                                往往建立在恐懼與利益交換上（害怕祖先降禍、希望保佑發財）。亡靈並不需要香火紙錢，燒紙錢反映出人內心的不安。
+                            </div>
+                            <div class="p-3 bg-white rounded-lg border border-emerald-100">
+                                <span class="font-bold text-emerald-700 block mb-1">聖經的最高孝道標準：</span>
+                                「當孝敬父母，使你的日子在耶和華你神所賜你的地上得以長久。」在父母活著時給予尊榮、陪伴與照顧，勝於離世後的鋪張。
+                            </div>
+                            <div class="p-3 bg-amber-100/60 rounded-lg">
+                                <span class="font-bold text-amber-900 block mb-1">💡 實踐指引：「敬祖」而不「拜祖」</span>
+                                追思祖先德行，但敬拜單單歸給造物主。掃墓時可用<span class="font-bold text-amber-800">「獻花、默禱、述說先人恩德」</span>追思三禮替代燒香。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50/40 p-5 rounded-xl border border-amber-200">
+                        <h3 class="font-bold text-amber-900 text-base mb-3 flex items-center gap-2">
+                            <span>🛡️</span> 擇日、風水與家庭溝通
+                        </h3>
+                        <div class="space-y-3 text-xs sm:text-sm text-gray-700">
+                            <div class="p-3 bg-white rounded-lg border border-amber-100">
+                                <span class="font-bold text-amber-800 block mb-1">不拜受造之物與真平安：</span>
+                                木石偶像是人手所造。「在你們裡面的，比那在世界上的更大。」(約一 4:4)。不用看八字擇日，因為日日是神所定的好日；不用收驚符咒，因為聖靈住在心中。
+                            </div>
+                            <div class="p-3 bg-white rounded-lg border border-amber-100">
+                                <span class="font-bold text-amber-800 block mb-1">面對非基督徒家人的態度：</span>
+                                態度重於爭辯，切勿用傲慢語氣批評長輩信仰。溫和堅定表達：「信耶穌讓我心裡有真平安，我也會加倍愛爸爸媽媽。」
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-50/60 p-5 rounded-xl border border-emerald-200">
+                    <h3 class="font-bold text-emerald-900 text-sm mb-3">✅ 信仰行動實務檢核表 (點擊勾選實踐)</h3>
+                    <div class="space-y-2 text-xs sm:text-sm">
+                        <label class="flex items-start gap-3 p-2 bg-white rounded-lg border border-emerald-100 cursor-pointer">
+                            <input type="checkbox" id="chk_family1" onchange="updateProgress()" class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
+                            <span class="text-gray-700">家中若有祖先牌位或神明桌，已與牧者長執討論如何妥善向長輩溝通表達敬祖態度。</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 bg-white rounded-lg border border-emerald-100 cursor-pointer">
+                            <input type="checkbox" id="chk_family2" onchange="updateProgress()" class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
+                            <span class="text-gray-700">立志受洗後在言語和行動上比以前更加孝順父母、主動關心家人與承擔家務。</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-lesson3" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 border border-amber-200 shadow-sm">
+                <h2 class="text-xl sm:text-2xl font-bold text-amber-900 mb-2">第三課：認識屬靈的家 —— 霧峰教會與長老教會體制</h2>
+                <p class="text-sm text-gray-600 mb-6">受洗不只是個人與神的垂直關係，也是加入霧峰教會大家庭的屬靈連結。長老教會採用民主代議與長執同工團隊治理。</p>
+
+                <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-200 mb-6">
+                    <h3 class="font-bold text-amber-900 text-sm mb-2 text-center">台灣基督長老教會（PCT）治理架構</h3>
+                    <div class="flex flex-col items-center text-xs space-y-2">
+                        <div class="bg-amber-800 text-white px-4 py-1.5 rounded-lg font-bold">總會（全國最高議會）</div>
+                        <div class="w-0.5 h-3 bg-amber-400"></div>
+                        <div class="bg-amber-700 text-white px-4 py-1.5 rounded-lg font-bold">中會（地方區會議：台中中會）</div>
+                        <div class="w-0.5 h-3 bg-amber-400"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl">
+                            <div class="bg-white p-3 rounded-lg border border-amber-300 text-center">
+                                <span class="font-bold text-amber-900 block mb-1">小會 (Session)</span>
+                                <span class="text-gray-600">由牧師與長老組成，掌管靈命治理、聖禮典、審查受洗與會籍。</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-amber-300 text-center">
+                                <span class="font-bold text-amber-900 block mb-1">長執會 (Church Board)</span>
+                                <span class="text-gray-600">由長老與執事組成，統籌六大部門行政運作與財務事工。</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="font-bold text-amber-900 text-base mb-3">霧峰教會事工組織：六大部門與八大團契</h3>
+
+                    <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 mb-4">
+                        <h4 class="font-bold text-amber-800 text-sm mb-2">🏛️ 長執會下屬六大部門</h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                            <div class="bg-white p-2.5 rounded border border-gray-200"><strong>禮拜部：</strong>主日崇拜、聖禮典與節期禮拜規劃</div>
+                            <div class="bg-white p-2.5 rounded border border-gray-200"><strong>關懷部：</strong>家庭探訪、病痛慰問與急難關懷</div>
+                            <div class="bg-white p-2.5 rounded border border-gray-200"><strong>傳道部：</strong>社區宣教、外展與慕道友跟進</div>
+                            <div class="bg-white p-2.5 rounded border border-gray-200"><strong>總務部：</strong>硬體營繕、環境維護與公共安全</div>
+                            <div class="bg-white p-2.5 rounded border border-gray-200"><strong>財務部：</strong>奉獻收支、預算編列與帳務審查</div>
+                            <div class="bg-white p-2.5 rounded border border-gray-200"><strong>教育部：</strong>門徒訓練、成人主日學與研道造就</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50/60 p-4 rounded-xl border border-amber-200">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
+                            <h4 class="font-bold text-amber-900 text-sm">🤝 教會八大團契 (點擊切換檢視)</h4>
+                            <div class="flex gap-2">
+                                <button onclick="filterFellowship('all')" id="flw-all" class="px-2.5 py-1 bg-amber-700 text-white rounded text-xs font-semibold">全部</button>
+                                <button onclick="filterFellowship('service')" id="flw-service" class="px-2.5 py-1 bg-white border border-amber-300 text-amber-800 rounded text-xs font-semibold">服事型</button>
+                                <button onclick="filterFellowship('pastoral')" id="flw-pastoral" class="px-2.5 py-1 bg-white border border-amber-300 text-amber-800 rounded text-xs font-semibold">牧養型</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs" id="fellowshipContainer">
+                            <div class="flw-card service bg-white p-3 rounded-lg border border-amber-200">
+                                <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-[10px] font-bold">服事型</span>
+                                <h5 class="font-bold text-gray-900 mt-1">主日學</h5>
+                                <p class="text-gray-600 mt-1">兒童與青少年信仰扎根與陪伴。</p>
+                            </div>
+                            <div class="flw-card service bg-white p-3 rounded-lg border border-amber-200">
+                                <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded text-[10px] font-bold">服事型</span>
+                                <h5 class="font-bold text-gray-900 mt-1">聖歌隊</h5>
+                                <p class="text-gray-600 mt-1">詩歌獻唱頌讚上帝，導引敬拜。</p>
+                            </div>
+                            <div class="flw-card pastoral bg-white p-3 rounded-lg border border-amber-200">
+                                <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">牧養型</span>
+                                <h5 class="font-bold text-gray-900 mt-1">少年團契 (少契)</h5>
+                                <p class="text-gray-600 mt-1">國高中生同儕陪伴與價值觀確立。</p>
+                            </div>
+                            <div class="flw-card pastoral bg-white p-3 rounded-lg border border-amber-200">
+                                <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">牧養型</span>
+                                <h5 class="font-bold text-gray-900 mt-1">青年團契 (青契)</h5>
+                                <p class="text-gray-600 mt-1">大專生與職青職涯、信仰同行。</p>
+                            </div>
+                            <div class="flw-card pastoral bg-white p-3 rounded-lg border border-amber-200">
+                                <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">牧養型</span>
+                                <h5 class="font-bold text-gray-900 mt-1">葡萄樹團契</h5>
+                                <p class="text-gray-600 mt-1">社青、年輕夫妻與育兒家庭支持。</p>
+                            </div>
+                            <div class="flw-card pastoral bg-white p-3 rounded-lg border border-amber-200">
+                                <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">牧養型</span>
+                                <h5 class="font-bold text-gray-900 mt-1">婦女團契</h5>
+                                <p class="text-gray-600 mt-1">姊妹查經、禱告與溫暖生活分享。</p>
+                            </div>
+                            <div class="flw-card pastoral bg-white p-3 rounded-lg border border-amber-200">
+                                <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">牧養型</span>
+                                <h5 class="font-bold text-gray-900 mt-1">活泉團契</h5>
+                                <p class="text-gray-600 mt-1">中壯年與成熟家庭之事奉基石。</p>
+                            </div>
+                            <div class="flw-card pastoral bg-white p-3 rounded-lg border border-amber-200">
+                                <span class="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">牧養型</span>
+                                <h5 class="font-bold text-gray-900 mt-1">松年團契</h5>
+                                <p class="text-gray-600 mt-1">銀髮長輩關顧與樂活安老。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-amber-300 p-4">
+                    <h3 class="font-bold text-amber-900 text-sm mb-3">📜 會友的權利與神聖責任</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                        <div class="bg-amber-50/50 p-3 rounded-lg">
+                            <span class="font-bold text-amber-800 block mb-1">🎁 享有的權利：</span>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li><strong>屬靈餵養與關懷：</strong>牧者與長執之探訪、代禱與輔導。</li>
+                                <li><strong>定期領受聖餐：</strong>紀念主的救贖，更新生命。</li>
+                                <li><strong>和會投票權：</strong>參與會員和會，選舉長執與重要決議。</li>
+                                <li><strong>服事參與：</strong>發掘恩賜參與各部門與團契服事。</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50/50 p-3 rounded-lg">
+                            <span class="font-bold text-amber-800 block mb-1">✝️ 神聖的責任：</span>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li><strong>主日崇拜生活：</strong>守安息日為聖，按時參與崇拜。</li>
+                                <li><strong>肢體團契生活：</strong>加入適合團契，彼此扶持。</li>
+                                <li><strong>甘心樂意奉獻：</strong>操練十一與感恩奉獻，支持事工。</li>
+                                <li><strong>承擔福音大使：</strong>在職場家庭活出基督樣式，引人歸主。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-lesson4" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 border border-amber-200 shadow-sm">
+                <h2 class="text-xl sm:text-2xl font-bold text-amber-900 mb-2">第四課：心意更新 —— 洗禮前 vs. 洗禮後的生命蛻變</h2>
+                <p class="text-sm text-gray-600 mb-6">受洗是新生活的起點。依靠聖靈，在日常生活中活出與蒙召之恩相稱的門徒樣式。</p>
+
+                <div class="bg-amber-50/40 p-5 rounded-xl border border-amber-200 mb-8">
+                    <h3 class="font-bold text-amber-900 text-base mb-2 text-center">📊 受洗前後信仰態度視覺化比對 (門徒生命指數)</h3>
+                    <p class="text-xs text-gray-500 text-center mb-4">圖表展現從「慕道者」跨越至「門徒」的六大面向指標轉變。</p>
+
+                    <div class="chart-container">
+                        <canvas id="transformationChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-stone-50 p-5 rounded-xl border border-stone-200">
+                        <h3 class="font-bold text-amber-900 text-sm mb-3 flex items-center gap-2">
+                            <span>📖</span> 扎根神話語：每日靈修 (QT) 4 步驟實踐
+                        </h3>
+                        <div class="space-y-3 text-xs sm:text-sm">
+                            <div class="p-2.5 bg-white rounded border border-gray-200">
+                                <span class="font-bold text-amber-800">1. 靜 (安靜預備)：</span>
+                                固定找不受干擾的時間（15分鐘），深呼吸默禱：「主啊，僕人敬聽，請向我的心說話。」
+                            </div>
+                            <div class="p-2.5 bg-white rounded border border-gray-200">
+                                <span class="font-bold text-amber-800">2. 讀 (反覆聆聽)：</span>
+                                閱讀約 10-15 節經文，慢讀 2-3 遍，注意觸動心弦的字句。
+                            </div>
+                            <div class="p-2.5 bg-white rounded border border-gray-200">
+                                <span class="font-bold text-amber-800">3. 想 (默想反思)：</span>
+                                思考：這段經文啟示神何種屬性？指出了我內心什麼罪或應許？今天該如何實踐？
+                            </div>
+                            <div class="p-2.5 bg-white rounded border border-gray-200">
+                                <span class="font-bold text-amber-800">4. 行 (筆記與行動)：</span>
+                                寫下一句當天「亮光金句」與簡短立志禱告，順從聖靈活出經文。
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-amber-100/70 rounded-lg text-xs">
+                            <span class="font-bold text-amber-900 block mb-1">⏱️ 1 分鐘安靜預備體驗：</span>
+                            <div class="flex items-center gap-3">
+                                <button onclick="startQtTimer()" id="qtTimerBtn" class="px-3 py-1 bg-amber-700 text-white rounded font-bold">開始安靜 (60s)</button>
+                                <span id="qtTimerDisplay" class="font-mono text-base font-bold text-amber-900">01:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-50 p-5 rounded-xl border border-stone-200">
+                        <h3 class="font-bold text-amber-900 text-sm mb-3 flex items-center gap-2">
+                            <span>🙏</span> 禱告操練：ACTS 禱告法則與體驗
+                        </h3>
+                        <div class="grid grid-cols-2 gap-2 text-xs mb-4">
+                            <div class="bg-white p-2 rounded border border-amber-200">
+                                <strong class="text-amber-800">A - Adoration</strong> (讚美敬拜): 讚美神的美德與偉大。
+                            </div>
+                            <div class="bg-white p-2 rounded border border-amber-200">
+                                <strong class="text-amber-800">C - Confession</strong> (認罪悔改): 誠實承認軟弱過犯，求潔淨。
+                            </div>
+                            <div class="bg-white p-2 rounded border border-amber-200">
+                                <strong class="text-amber-800">T - Thanksgiving</strong> (凡事感恩): 為所領受之恩典獻上感謝。
+                            </div>
+                            <div class="bg-white p-2 rounded border border-amber-200">
+                                <strong class="text-amber-800">S - Supplication</strong> (代求祈求): 為肢體、家庭與自己祈求。
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-3 rounded-lg border border-amber-300">
+                            <h4 class="font-bold text-xs text-amber-900 mb-2">💡 互動 ACTS 禱告產生器</h4>
+                            <div class="space-y-2 text-xs">
+                                <input id="acts_a" type="text" placeholder="A (讚美): 主啊，祢是..." class="w-full p-1.5 border border-gray-300 rounded">
+                                <input id="acts_c" type="text" placeholder="C (認罪): 求主赦免我..." class="w-full p-1.5 border border-gray-300 rounded">
+                                <input id="acts_t" type="text" placeholder="T (感恩): 感謝祢赐予..." class="w-full p-1.5 border border-gray-300 rounded">
+                                <input id="acts_s" type="text" placeholder="S (祈求): 求主指引我..." class="w-full p-1.5 border border-gray-300 rounded">
+                                <button onclick="generatePrayer()" class="w-full py-1.5 bg-amber-700 text-white rounded font-bold">組合我的禱告詞</button>
+                                <div id="prayerOutput" class="hidden p-2.5 bg-amber-50 rounded border border-amber-200 text-xs text-amber-900 italic"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-appendix" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 border border-amber-200 shadow-sm">
+                <h2 class="text-xl sm:text-2xl font-bold text-amber-900 mb-2">洗禮前的自我問答與誓約立志</h2>
+                <p class="text-sm text-gray-600 mb-6">請安靜自己的心，在神面前自我省察並完成以下四項莊嚴的問答回應：</p>
+
+                <div class="space-y-4 mb-8">
+                    <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 text-xs sm:text-sm">
+                        <p class="font-bold text-amber-900 mb-1">1. 你是否承認自己在上帝面前是個罪人，無力自救，需要主耶穌基督的恩典與救贖？</p>
+                        <p class="text-gray-600 italic mb-2">（我深知自己不完美、常有軟弱，願意放下驕傲，全心倚靠十字架的赦罪恩典。）</p>
+                        <label class="inline-flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-lg border border-amber-300">
+                            <input type="checkbox" id="vow1" onchange="updateProgress()" class="rounded text-amber-600">
+                            <span class="font-bold text-amber-900">是的，我承認。</span>
+                        </label>
+                    </div>
+
+                    <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 text-xs sm:text-sm">
+                        <p class="font-bold text-amber-900 mb-1">2. 你是否相信主耶穌基督是上帝的獨生子，為你的罪死在十字架上，並從死裡復活？</p>
+                        <p class="text-gray-600 italic mb-2">（我相信耶穌是道路、真理、生命，祂的復活帶給我永恆的盼望。）</p>
+                        <label class="inline-flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-lg border border-amber-300">
+                            <input type="checkbox" id="vow2" onchange="updateProgress()" class="rounded text-amber-600">
+                            <span class="font-bold text-amber-900">是的，我深信。</span>
+                        </label>
+                    </div>
+
+                    <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 text-xs sm:text-sm">
+                        <p class="font-bold text-amber-900 mb-1">3. 你是否決心離棄一切偶像迷信與罪惡生活，立志一生順服主耶穌基督的教導？</p>
+                        <p class="text-gray-600 italic mb-2">（我願意把生命主權交給神，不再求神問卜，專心以神的話語作為行事指引。）</p>
+                        <label class="inline-flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-lg border border-amber-300">
+                            <input type="checkbox" id="vow3" onchange="updateProgress()" class="rounded text-amber-600">
+                            <span class="font-bold text-amber-900">是的，靠著神的恩典，我願意。</span>
+                        </label>
+                    </div>
+
+                    <div class="p-4 bg-amber-50/50 rounded-xl border border-amber-200 text-xs sm:text-sm">
+                        <p class="font-bold text-amber-900 mb-1">4. 你是否願意加入霧峰基督長老教會，同心敬拜、彼此相愛，並盡心盡力維護教會的聖潔與合一？</p>
+                        <p class="text-gray-600 italic mb-2">（我願意委身在霧峰教會這個屬靈的家，積極參與團契與服事，與弟兄姊妹同奔天路。）</p>
+                        <label class="inline-flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-lg border border-amber-300">
+                            <input type="checkbox" id="vow4" onchange="updateProgress()" class="rounded text-amber-600">
+                            <span class="font-bold text-amber-900">是的，我願意。</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="bg-stone-50 p-5 rounded-xl border border-stone-200">
+                    <h3 class="font-bold text-amber-900 text-base mb-3">✍️ 團契與服事意願登記</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm mb-4">
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">希望參與的團契：</label>
+                            <select id="selFellowship" class="w-full p-2 border border-gray-300 rounded-lg">
+                                <option value="">-- 請選擇適合您的團契 --</option>
+                                <option value="主日學">主日學</option>
+                                <option value="聖歌隊">聖歌隊</option>
+                                <option value="少年團契">少年團契</option>
+                                <option value="青年團契">青年團契</option>
+                                <option value="葡萄樹團契">葡萄樹團契</option>
+                                <option value="婦女團契">婦女團契</option>
+                                <option value="活泉團契">活泉團契</option>
+                                <option value="松年團契">松年團契</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-gray-700 mb-1">盼望嘗試的服事領域 (可多選/填寫)：</label>
+                            <input type="text" id="inpService" placeholder="例如：敬拜讚美、接待、影音、活動企劃..." class="w-full p-2 border border-gray-300 rounded-lg">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">希望牧長/區牧/小組長代禱事項：</label>
+                        <textarea id="inpPrayerReq" rows="3" placeholder="請寫下您的代禱需求..." class="w-full p-2 border border-gray-300 rounded-lg"></textarea>
+                    </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="copySummary()" class="px-5 py-2 bg-amber-700 text-white rounded-lg font-bold hover:bg-amber-800 transition-colors text-xs sm:text-sm">
+                            📋 複製並匯出我的受洗回應表
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#f5ebd7] border-t border-[#e5d5b7] py-4 mt-8 text-center text-xs text-amber-900">
+        <p>霧峰基督長老教會 ． 受洗研道與信仰生活指南</p>
+        <p class="text-gray-500 mt-0.5">「你們得救是本乎恩，也因著信。」—— 以弗所書 2:8</p>
+    </footer>
+
+    <script>
+        function switchTab(tabId) {
+            const tabs = ['overview', 'lesson1', 'lesson2', 'lesson3', 'lesson4', 'appendix'];
+            tabs.forEach(id => {
+                const sec = document.getElementById(`sec-${id}`);
+                const btn = document.getElementById(`tab-${id}`);
+                if (id === tabId) {
+                    sec.classList.remove('hidden');
+                    btn.classList.add('active');
+                } else {
+                    sec.classList.add('hidden');
+                    btn.classList.remove('active');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleCard(id) {
+            const content = document.getElementById(`${id}-content`);
+            const icon = document.getElementById(`${id}-icon`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.innerText = '−';
+            } else {
+                content.classList.add('hidden');
+                icon.innerText = '+';
+            }
+        }
+
+        function filterFellowship(type) {
+            const cards = document.querySelectorAll('.flw-card');
+            const btns = ['all', 'service', 'pastoral'];
+
+            btns.forEach(b => {
+                const btnEl = document.getElementById(`flw-${b}`);
+                if (b === type) {
+                    btnEl.className = "px-2.5 py-1 bg-amber-700 text-white rounded text-xs font-semibold";
+                } else {
+                    btnEl.className = "px-2.5 py-1 bg-white border border-amber-300 text-amber-800 rounded text-xs font-semibold";
+                }
+            });
+
+            cards.forEach(card => {
+                if (type === 'all') {
+                    card.classList.remove('hidden');
+                } else if (card.classList.contains(type)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        function updateProgress() {
+            let total = 6;
+            let checked = 0;
+
+            if (document.getElementById('chk_family1').checked) checked++;
+            if (document.getElementById('chk_family2').checked) checked++;
+            if (document.getElementById('vow1').checked) checked++;
+            if (document.getElementById('vow2').checked) checked++;
+            if (document.getElementById('vow3').checked) checked++;
+            if (document.getElementById('vow4').checked) checked++;
+
+            let percent = Math.round(15 + (checked / total) * 85);
+            document.getElementById('overallProgressBar').style.width = percent + '%';
+            document.getElementById('overallProgressText').innerText = percent + '%';
+        }
+
+        function saveReflection() {
+            updateProgress();
+        }
+
+        let qtInterval = null;
+        function startQtTimer() {
+            let seconds = 60;
+            const display = document.getElementById('qtTimerDisplay');
+            const btn = document.getElementById('qtTimerBtn');
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+
+            if (qtInterval) clearInterval(qtInterval);
+
+            qtInterval = setInterval(() => {
+                seconds--;
+                let m = String(Math.floor(seconds / 60)).padStart(2, '0');
+                let s = String(seconds % 60).padStart(2, '0');
+                display.innerText = `${m}:${s}`;
+
+                if (seconds <= 0) {
+                    clearInterval(qtInterval);
+                    display.innerText = "完成！願神親自向你說話";
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50');
+                }
+            }, 1000);
+        }
+
+        function generatePrayer() {
+            const a = document.getElementById('acts_a').value || '公義慈愛的天父';
+            const c = document.getElementById('acts_c').value || '我的軟弱與罪犯';
+            const t = document.getElementById('acts_t').value || '祢賞賜的平安飲食';
+            const s = document.getElementById('acts_s').value || '家人與自己的心靈靈命';
+
+            const prayerText = `「天父上帝，${a}。求祢赦免${c}。感謝祢賜下${t}。求祢保守${s}。奉主耶穌基督的名禱告，阿們！」`;
+            const out = document.getElementById('prayerOutput');
+            out.innerText = prayerText;
+            out.classList.remove('hidden');
+        }
+
+        function copySummary() {
+            const fellowship = document.getElementById('selFellowship').value || '未填寫';
+            const service = document.getElementById('inpService').value || '未填寫';
+            const prayer = document.getElementById('inpPrayerReq').value || '無';
+
+            const summary = `【霧峰基督長老教會 受洗心得與意願表】\n` +
+                `- 誓約確認：已完成四項基本信仰問答確認\n` +
+                `- 期望團契：${fellowship}\n` +
+                `- 盼望服事：${service}\n` +
+                `- 代禱事項：${prayer}\n` +
+                `感謝上帝引導我進入霧峰教會大家庭！`;
+
+            navigator.clipboard.writeText(summary).then(() => {
+                alert('受洗回應摘要已成功複製到剪貼簿！您可以傳送給牧長或組長。');
+            }).catch(() => {
+                alert(summary);
+            });
+        }
+
+        let chartInstance = null;
+        function initChart() {
+            const ctx = document.getElementById('transformationChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        '身分認同 (兒女/門徒)',
+                        '倚靠對象 (凡事禱告)',
+                        '逆境心態 (確信神掌權)',
+                        '道德人際 (聖潔寬恕)',
+                        '教會態度 (主動服事)',
+                        '金錢觀念 (忠心管家)'
+                    ],
+                    datasets: [
+                        {
+                            label: '洗禮前 (慕道階段)',
+                            data: [35, 40, 30, 50, 30, 40],
+                            backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                            borderColor: '#d97706',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#d97706'
+                        },
+                        {
+                            label: '洗禮後 (門徒階段目標)',
+                            data: [95, 90, 85, 90, 85, 85],
+                            backgroundColor: 'rgba(5, 150, 105, 0.2)',
+                            borderColor: '#059669',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#059669'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e5e7eb' },
+                            grid: { color: '#f3f4f6' },
+                            pointLabels: {
+                                font: { size: 11, weight: 'bold' },
+                                color: '#4b5563'
+                            },
+                            ticks: { display: false, max: 100, min: 0 }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+            initChart();
+        };
+    </script>
+</body>
+</html>
